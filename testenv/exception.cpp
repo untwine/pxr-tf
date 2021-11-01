@@ -1,5 +1,5 @@
 //
-// Copyright 2016 Pixar
+// Copyright 2021 Pixar
 //
 // Licensed under the Apache License, Version 2.0 (the "Apache License")
 // with the following modification; you may not use this file except in
@@ -21,48 +21,52 @@
 // KIND, either express or implied. See the Apache License for the specific
 // language governing permissions and limitations under the Apache License.
 //
+#include "pxr/pxr.h"
+#include "pxr/base/tf/exception.h"
+#include "pxr/base/tf/diagnostic.h"
+#include "pxr/base/tf/regTest.h"
 
-#include "pxr/base/tf/anyWeakPtr.h"
-#include "pxr/base/tf/pyUtils.h"
-#include "pxr/base/tf/pyContainerConversions.h"
-
-#include <boost/python/to_python_converter.hpp>
-
-using namespace boost::python;
-
-PXR_NAMESPACE_OPEN_SCOPE
-
-// Put this in the pxr namespace so that we can declare it a friend in
-// anyWeakPtr.h
-
-object Tf_GetPythonObjectFromAnyWeakPtr(TfAnyWeakPtr const &self) {
-    return self._GetPythonObject();
-}
-
-PXR_NAMESPACE_CLOSE_SCOPE
+#include <string>
 
 PXR_NAMESPACE_USING_DIRECTIVE
 
-namespace {
-
-struct Tf_AnyWeakPtrToPython {
-
-    Tf_AnyWeakPtrToPython() {
-        to_python_converter<TfAnyWeakPtr, Tf_AnyWeakPtrToPython>();
-    }
-
-    static PyObject *convert(TfAnyWeakPtr const &any) {
-        return incref(Tf_GetPythonObjectFromAnyWeakPtr(any).ptr());
-    }
+class Tf_TestException : public TfBaseException
+{
+public:
+    using TfBaseException::TfBaseException;
+    virtual ~Tf_TestException();
 };
 
-} // anonymous namespace
-
-void wrapAnyWeakPtr()
+Tf_TestException::~Tf_TestException()
 {
-    to_python_converter<TfAnyWeakPtr, Tf_AnyWeakPtrToPython>();
-
-    TfPyContainerConversions::from_python_sequence<
-        std::set<TfAnyWeakPtr>,
-        TfPyContainerConversions::set_policy>();
 }
+
+static bool
+Test_TfException()
+{
+    try {
+        TF_THROW(Tf_TestException, "test exception 1");
+    }
+    catch (TfBaseException const &exc) {
+        TF_AXIOM(std::string(exc.what()) == std::string("test exception 1"));
+        TF_AXIOM(exc.GetThrowContext());
+    }
+    catch (...) {
+        TF_FATAL_ERROR("Expected exception was not thrown");
+    }
+
+    try {
+        TF_THROW(Tf_TestException, TfSkipCallerFrames(2), "test exception 2");
+    }
+    catch (TfBaseException const &exc) {
+        TF_AXIOM(std::string(exc.what()) == std::string("test exception 2"));
+        TF_AXIOM(exc.GetThrowContext());
+    }
+    catch (...) {
+        TF_FATAL_ERROR("Expected exception was not thrown");
+    }
+
+    return true;
+}
+
+TF_ADD_REGTEST(TfException);
