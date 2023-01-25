@@ -1,5 +1,5 @@
 //
-// Copyright 2016 Pixar
+// Copyright 2022 Pixar
 //
 // Licensed under the Apache License, Version 2.0 (the "Apache License")
 // with the following modification; you may not use this file except in
@@ -24,18 +24,57 @@
 
 #include "pxr/pxr.h"
 
-#include "pxr/base/tf/pyWrapContext.h"
-#include "pxr/base/tf/diagnosticLite.h"
-#include "pxr/base/tf/instantiateSingleton.h"
+#include "pxr/base/tf/spinRWMutex.h"
+#include "pxr/base/arch/defines.h"
+
+// Needed for ARCH_SPIN_PAUSE on Windows in builds with precompiled
+// headers disabled.
+#ifdef ARCH_COMPILER_MSVC
+#include <intrin.h>
+#endif
+
+#include <thread>
 
 PXR_NAMESPACE_OPEN_SCOPE
 
-TF_INSTANTIATE_SINGLETON(Tf_PyWrapContextManager);
+static constexpr int SpinsBeforeBackoff = 32;
 
-Tf_PyWrapContextManager::Tf_PyWrapContextManager()
+template <class Fn>
+static void WaitWithBackoff(Fn &&fn) {
+    // Hope for the best...
+    if (ARCH_LIKELY(fn())) {
+        return;
+    }
+    // Otherwise spin for a bit...
+    for (int i = 0; i != SpinsBeforeBackoff; ++i) {
+        ARCH_SPIN_PAUSE();
+        if (fn()) {
+            return;
+        }
+    }
+    // Keep checking but yield our thread...
+    do {
+        std::this_thread::yield();
+    } while (!fn());
+}
+    
+
+void
+TfSpinRWMutex::_WaitForWriter() const
 {
-    // initialize the stack of context names
-    _contextStack.clear();
+    // Wait until we see a cleared WriterFlag.
+    WaitWithBackoff([this]() {
+        return !(_lockState.load() & WriterFlag);
+    });
+}
+
+void
+TfSpinRWMutex::_WaitForReaders() const
+{
+    // Wait until we see zero readers.
+    WaitWithBackoff([this]() {
+        return _lockState.load() == WriterFlag;
+    });
 }
 
 PXR_NAMESPACE_CLOSE_SCOPE
