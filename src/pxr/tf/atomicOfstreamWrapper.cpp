@@ -81,10 +81,10 @@ TfAtomicOfstreamWrapper::Open(
     
     // Close the temp file descriptor returned by Arch, and open this buffer
     // with the same file name.
-    ArchCloseFile(tmpFd);
+    arch::CloseFile(tmpFd);
 
 #if defined(ARCH_OS_WINDOWS)
-    _stream.open(ArchWindowsUtf8ToUtf16(_tmpFilePath).c_str(),
+    _stream.open(arch::WindowsUtf8ToUtf16(_tmpFilePath).c_str(),
                  std::fstream::out|std::fstream::binary|std::fstream::trunc);
 #else
     _stream.open(_tmpFilePath.c_str(),
@@ -94,7 +94,7 @@ TfAtomicOfstreamWrapper::Open(
         if (reason) {
             *reason = TfStringPrintf(
                 "Unable to open '%s' for writing: %s",
-                _tmpFilePath.c_str(), ArchStrerror().c_str());
+                _tmpFilePath.c_str(), arch::Strerror().c_str());
         }
         return false;
     }
@@ -138,13 +138,13 @@ TfAtomicOfstreamWrapper::Cancel(
 
     bool success = true;
 
-    if (ArchUnlinkFile(_tmpFilePath.c_str()) != 0) {
+    if (arch::UnlinkFile(_tmpFilePath.c_str()) != 0) {
         if (errno != ENOENT) {
             if (reason) {
                 *reason = TfStringPrintf(
                     "Unable to remove temporary file '%s': %s",
                     _tmpFilePath.c_str(),
-                    ArchStrerror(errno).c_str());
+                    arch::Strerror(errno).c_str());
             }
             success = false;
         }

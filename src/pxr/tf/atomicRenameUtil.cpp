@@ -48,8 +48,8 @@ Tf_AtomicRenameFileOver(std::string const &srcFileName,
 {
     bool result = true;
 #if defined(ARCH_OS_WINDOWS)
-    const std::wstring wsrc{ ArchWindowsUtf8ToUtf16(srcFileName) };
-    const std::wstring wdst{ ArchWindowsUtf8ToUtf16(dstFileName) };
+    const std::wstring wsrc{ arch::WindowsUtf8ToUtf16(srcFileName) };
+    const std::wstring wdst{ arch::WindowsUtf8ToUtf16(dstFileName) };
     bool moved = MoveFileExW(wsrc.c_str(),
                             wdst.c_str(),
                             MOVEFILE_REPLACE_EXISTING |
@@ -59,11 +59,11 @@ Tf_AtomicRenameFileOver(std::string const &srcFileName,
             "Failed to rename temporary file '%s' to '%s': %s",
             srcFileName.c_str(),
             dstFileName.c_str(),
-            ArchStrSysError(::GetLastError()).c_str());
+            arch::StrSysError(::GetLastError()).c_str());
         result = false;
     }
 #else
-    // The mode of the temporary file is set by ArchMakeTmpFile, which tries to
+    // The mode of the temporary file is set by arch::MakeTmpFile, which tries to
     // be slightly less restrictive by setting the mode to 0660, whereas the
     // underlying temporary file API used by arch creates files with mode
     // 0600. When renaming our temporary file into place, we either want the
@@ -81,14 +81,14 @@ Tf_AtomicRenameFileOver(std::string const &srcFileName,
 
     if (chmod(srcFileName.c_str(), fileMode) != 0) {
         TF_WARN("Unable to set permissions for temporary file '%s': %s",
-                srcFileName.c_str(), ArchStrerror(errno).c_str());
+                srcFileName.c_str(), arch::Strerror(errno).c_str());
     }
 
     if (rename(srcFileName.c_str(), dstFileName.c_str()) != 0) {
         *error = TfStringPrintf(
             "Failed to rename temporary file '%s' to '%s': %s",
             srcFileName.c_str(), dstFileName.c_str(),
-            ArchStrerror(errno).c_str());
+            arch::Strerror(errno).c_str());
         result = false;
     }
 #endif
@@ -134,7 +134,7 @@ Tf_CreateSiblingTempFile(std::string fileName,
     std::string dirPath = TfStringGetBeforeSuffix(realFilePath, '/');
 #endif
 
-    if (ArchFileAccess(dirPath.c_str(), W_OK) != 0) {
+    if (arch::FileAccess(dirPath.c_str(), W_OK) != 0) {
         *error = TfStringPrintf(
             "Insufficient permissions to write to destination "
             "directory '%s'", dirPath.c_str());
@@ -146,7 +146,7 @@ Tf_CreateSiblingTempFile(std::string fileName,
     // successfully even if we can't write to the file, but we retain the policy
     // that if the user couldn't open the file for writing, they can't write to
     // the file via this object.
-    if (ArchFileAccess(realFilePath.c_str(), W_OK) != 0 && errno != ENOENT) {
+    if (arch::FileAccess(realFilePath.c_str(), W_OK) != 0 && errno != ENOENT) {
         *error = TfStringPrintf(
             "Insufficient permissions to write to destination "
             "file '%s'", realFilePath.c_str());
@@ -156,11 +156,11 @@ Tf_CreateSiblingTempFile(std::string fileName,
     std::string tmpFilePrefix =
         TfStringGetBeforeSuffix(TfGetBaseName(realFilePath));
     std::string tmpFN;
-    result = ArchMakeTmpFile(dirPath, tmpFilePrefix, &tmpFN);
+    result = arch::MakeTmpFile(dirPath, tmpFilePrefix, &tmpFN);
     if (result == -1) {
         *error = TfStringPrintf("Unable to create temporary file '%s': %s",
                                 tmpFN.c_str(),
-                                ArchStrerror(errno).c_str());
+                                arch::Strerror(errno).c_str());
         return result;
     }
 

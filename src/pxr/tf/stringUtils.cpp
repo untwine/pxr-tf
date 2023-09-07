@@ -63,13 +63,13 @@ namespace pxr {
 string
 TfVStringPrintf(const std::string& fmt, va_list ap)
 {
-    return ArchVStringPrintf(fmt.c_str(), ap);
+    return arch::VStringPrintf(fmt.c_str(), ap);
 }
 
 string
 TfVStringPrintf(const char *fmt, va_list ap)
 {
-    return ArchVStringPrintf(fmt, ap);
+    return arch::VStringPrintf(fmt, ap);
 }
 
 string
@@ -77,7 +77,7 @@ TfStringPrintf(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    string s = ArchVStringPrintf(fmt, ap);
+    string s = arch::VStringPrintf(fmt, ap);
     va_end(ap);
     return s;
 }
@@ -321,7 +321,7 @@ TfGetBaseName(const string& fileName)
     if (i == fileName.size() - 1)    // ends in directory delimiter
         return TfGetBaseName(fileName.substr(0, i));
 #if defined(ARCH_OS_WINDOWS)
-    const std::wstring wfileName{ ArchWindowsUtf8ToUtf16(fileName) };
+    const std::wstring wfileName{ arch::WindowsUtf8ToUtf16(fileName) };
     LPWSTR result = PathFindFileNameW(wfileName.c_str());
 
     // If PathFindFilename returns the same string back, that means it didn't
@@ -336,7 +336,7 @@ TfGetBaseName(const string& fileName)
             return std::string();
         }
     }
-    return ArchWindowsUtf16ToUtf8(result);
+    return arch::WindowsUtf16ToUtf8(result);
 
 #else
     if (i == string::npos)                      // no / in name
@@ -752,7 +752,7 @@ Mismatch(const char *b1, const char *e1, const char *b2)
         memcpy(&b, b2, WordSz);
         x = a ^ b;
         if (x) {
-            int idx = ArchCountTrailingZeros(x) / WordSz;
+            int idx = arch::CountTrailingZeros(x) / WordSz;
             b1 += idx, b2 += idx;
             return { b1, b2 };
         }

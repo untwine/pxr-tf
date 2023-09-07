@@ -50,7 +50,7 @@ static void Translate(TfBaseException const &exc)
     std::string framesMsg;
     if (!throwStack.empty()) {
         std::stringstream throwStackText;
-        ArchPrintStackFrames(throwStackText, throwStack,
+        arch::PrintStackFrames(throwStackText, throwStack,
                              /*skipUnknownFrames=*/true);
         std::vector<std::string> throwStackMsg =
             TfStringSplit(throwStackText.str(), "\n");
@@ -73,7 +73,7 @@ static void Translate(TfBaseException const &exc)
     // Raise the Python exception.
     PyErr_Format(tfExceptionClass, "%s - %s%s%s%s",
                  exc.what(),
-                 ArchGetDemangled(typeid(exc)).c_str(),
+                 arch::GetDemangled(typeid(exc)).c_str(),
                  contextMsg.empty() ? "" : " thrown:\n -> ",
                  contextMsg.empty() ? "" : contextMsg.c_str(),
                  framesMsg.empty() ? "" : (

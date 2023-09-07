@@ -71,7 +71,7 @@ Tf_NoticeRegistry::_VerifyFailedCast(const type_info& toType,
                                      const TfNotice& notice,
                                      const TfNotice* castNotice)
 {
-    string typeName = ArchGetDemangled(typeid(notice));
+    string typeName = arch::GetDemangled(typeid(notice));
 
     if (castNotice) {
         {
@@ -103,7 +103,7 @@ Tf_NoticeRegistry::_VerifyFailedCast(const type_info& toType,
                    "non-inlined virtual functions and this system's C++ "
                    "ABI is non-standard.  Verify that class '%s'"
                    "has at least one non-inline virtual function.\n",
-                   typeName.c_str(), ArchGetDemangled(toType).c_str(),
+                   typeName.c_str(), arch::GetDemangled(toType).c_str(),
                    typeName.c_str(), typeName.c_str());
 }
 
@@ -338,7 +338,7 @@ Tf_NoticeRegistry::_BadTypeFatalMsg(const TfType& t,
     if (t.IsUnknown()) {
         msg = TfStringPrintf("Class %s (derived from TfNotice) is "
                              "undefined in the TfType system",
-                             ArchGetDemangled(ti).c_str());
+                             arch::GetDemangled(ti).c_str());
     }
     else if (!baseTypes.empty()) {
         msg = TfStringPrintf("TfNotice type '%s' has multiple base types;\n"

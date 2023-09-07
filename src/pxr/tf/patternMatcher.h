@@ -124,7 +124,7 @@ class TfPatternMatcher
     bool _isGlob;
     std::string _pattern;
     mutable bool _recompile;
-    mutable ArchRegex _regex;
+    mutable arch::Regex _regex;
         
 };
 

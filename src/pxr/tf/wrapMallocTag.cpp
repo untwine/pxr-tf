@@ -88,7 +88,7 @@ _GetCallStacks()
         TF_FOR_ALL(func, *stack) {
             std::string& name = functionNames[*func];
             if (name.empty()) {
-                ArchGetAddressInfo(reinterpret_cast<void*>(*func),
+                arch::GetAddressInfo(reinterpret_cast<void*>(*func),
                                    NULL, NULL, &name, NULL);
                 if (name.empty()) {
                     name = "<unknown>";
@@ -159,7 +159,7 @@ _LogReport(
     std::string const &rootName)
 {
     string tmpFile;
-    ArchMakeTmpFile(std::string("callSiteReport") +
+    arch::MakeTmpFile(std::string("callSiteReport") +
         (rootName.empty() ? "" : "_") + rootName, &tmpFile);
 
     _ReportToFile(self, tmpFile, rootName);

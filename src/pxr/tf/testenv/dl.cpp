@@ -56,7 +56,7 @@ Test_TfDl()
 
     // Compute path to test library.
     string dlname;
-    TF_AXIOM(ArchGetAddressInfo((void*)Test_TfDl, &dlname, NULL, NULL, NULL));
+    TF_AXIOM(arch::GetAddressInfo((void*)Test_TfDl, &dlname, NULL, NULL, NULL));
     dlname = TfGetPathName(dlname) +
         "lib" ARCH_PATH_SEP
 #if !defined(ARCH_OS_WINDOWS)
@@ -66,7 +66,7 @@ Test_TfDl()
 
     // Make sure that this .so does indeed exist first
     printf("Checking test shared lib: %s\n", dlname.c_str());
-    TF_AXIOM(!ArchFileAccess(dlname.c_str(), R_OK));
+    TF_AXIOM(!arch::FileAccess(dlname.c_str(), R_OK));
 
     // Check that we can open the existing library.
     void *handle =

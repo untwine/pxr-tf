@@ -42,11 +42,11 @@ TfSetenv(const std::string & name, const std::string & value)
     }
 #endif // PXR_PYTHON_SUPPORT_ENABLED
 
-    if (ArchSetEnv(name.c_str(), value.c_str(), /* overwrite */ true)) {
+    if (arch::SetEnv(name.c_str(), value.c_str(), /* overwrite */ true)) {
         return true;
     }
 
-    TF_WARN("Error setting '%s': %s", name.c_str(), ArchStrerror().c_str());
+    TF_WARN("Error setting '%s': %s", name.c_str(), arch::Strerror().c_str());
     return false;
 }
 
@@ -59,11 +59,11 @@ TfUnsetenv(const std::string & name)
     }
 #endif // PXR_PYTHON_SUPPORT_ENABLED
 
-    if (ArchRemoveEnv(name.c_str())) {
+    if (arch::RemoveEnv(name.c_str())) {
         return true;
     }
 
-    TF_WARN("Error unsetting '%s': %s", name.c_str(), ArchStrerror().c_str());
+    TF_WARN("Error unsetting '%s': %s", name.c_str(), arch::Strerror().c_str());
     return false;
 }
 

@@ -41,10 +41,10 @@ static void
 _SetOutputFile(object const &file)
 {
     int filefd = PyObject_AsFileDescriptor(file.ptr());
-    if (filefd == ArchFileNo(stdout)) {
+    if (filefd == arch::FileNo(stdout)) {
         TfDebug::SetOutputFile(stdout);
     }
-    else if (filefd == ArchFileNo(stderr)) {
+    else if (filefd == arch::FileNo(stderr)) {
         TfDebug::SetOutputFile(stderr);
     }
     else {

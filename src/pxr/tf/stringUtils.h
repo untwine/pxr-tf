@@ -65,7 +65,7 @@ class TfToken;
 /// into \c TfStringPrintf() as in the above example (i.e. \c caller.c_str()
 /// as opposed to just passing \c caller).
 ///
-/// \note \c TfStringPrintf() is just a wrapper for \c ArchStringPrintf().
+/// \note \c TfStringPrintf() is just a wrapper for \c arch::StringPrintf().
 TF_API
 std::string TfStringPrintf(const char *fmt, ...)
 #ifndef doxygen
@@ -81,7 +81,7 @@ std::string TfStringPrintf(const char *fmt, ...)
 /// value of \c ap is undefined after the call. A functions that calls \c
 /// TfVStringPrintf() should call \c va_end(ap) itself afterwards.
 ///
-/// \note \c TfVStringPrintf() is just a wrapper for \c ArchVStringPrintf().
+/// \note \c TfVStringPrintf() is just a wrapper for \c arch::VStringPrintf().
 TF_API
 std::string TfVStringPrintf(const std::string& fmt, va_list ap);
 

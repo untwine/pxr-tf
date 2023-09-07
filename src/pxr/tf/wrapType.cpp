@@ -130,7 +130,7 @@ TfType
 _TestFindType( Tf_TestCppBase & cppBase )
 {
     printf("_TestFindType with '%s'\n",
-           ArchGetDemangled(typeid(cppBase)).c_str());
+           arch::GetDemangled(typeid(cppBase)).c_str());
     return TfType::Find(cppBase);
 }
 

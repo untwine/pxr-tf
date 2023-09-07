@@ -116,7 +116,7 @@ private:
 };
 
 /// Return a copy of the current description stack for the "main" thread as
-/// identified by ArchGetMainThreadId() as a vector of strings.  The most
+/// identified by arch::GetMainThreadId() as a vector of strings.  The most
 /// recently pushed description is at back(), and the least recently pushed
 /// description is at front().
 TF_API std::vector<std::string>

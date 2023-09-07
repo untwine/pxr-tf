@@ -256,7 +256,7 @@ _ComputeAndLockScopeDescriptionStackMsg()
         entries[i] = &reg._stacks[i];
     }
     // Sort -- always sort "main thread" first.
-    std::thread::id mainThreadId = ArchGetMainThreadId();
+    std::thread::id mainThreadId = arch::GetMainThreadId();
     std::sort(
         entries, entries + numEntries,
         [mainThreadId](_StackRegistry::_StackEntry *l,
@@ -287,7 +287,7 @@ _ComputeAndLockScopeDescriptionStackMsg()
 
         writer.Write("Thread ");
         writer.Write(e->idStr.c_str());
-        if (e->id == ArchGetMainThreadId()) {
+        if (e->id == arch::GetMainThreadId()) {
             writer.Write(" (main)");
         }
         writer.Write(" Scope Descriptions\n");
@@ -423,7 +423,7 @@ _GetScopeDescriptionStack(std::thread::id id)
 std::vector<std::string>
 TfGetCurrentScopeDescriptionStack()
 {
-    return _GetScopeDescriptionStack(ArchGetMainThreadId());
+    return _GetScopeDescriptionStack(arch::GetMainThreadId());
 }
 
 vector<string>

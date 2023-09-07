@@ -211,16 +211,16 @@ TestTfReadLink()
     TF_AXIOM(TfReadLink("") == "");
 
     if (testSymlinks) {
-        ArchUnlinkFile("test-link");
+        arch::UnlinkFile("test-link");
         if (!_Symlink(knownDirPath, "test-link")) {
             TF_RUNTIME_ERROR("failed to create test link: %s",
-                                ArchStrerror(errno).c_str());
+                                arch::Strerror(errno).c_str());
             return false;
         }
 
         TF_AXIOM(TfReadLink("test-link") == knownDirPath);
         TF_AXIOM(TfReadLink(knownDirPath) == "");
-        ArchUnlinkFile("test-link");
+        arch::UnlinkFile("test-link");
     }
 
     return true;

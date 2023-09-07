@@ -68,7 +68,7 @@ TF_INSTANTIATE_DEFINED_STACKED(Tf_FallbackStacked);
 
 template <class T>
 static void PrintStack() {
-    printf("%s : ", ArchGetDemangled<T>().c_str());
+    printf("%s : ", arch::GetDemangled<T>().c_str());
     TF_FOR_ALL(i, T::GetStack())
         printf("%d, ", (*i)->value);
     printf("\n");

@@ -77,7 +77,7 @@ static const size_t _MaxMallocStackDepth = 64;
 
 // The number of top stack frames to ignore when saving frames for a
 // malloc stack.  Currently these frames are:
-// #0   ArchGetStackFrames(unsigned long, vector<unsigned long, allocator<unsigned long> >*)
+// #0   arch::GetStackFrames(unsigned long, vector<unsigned long, allocator<unsigned long> >*)
 // #1   Tf_MallocGlobalData::_MaybeCaptureStackOrDebug(Tf_MallocPathNode const*, void const*, unsigned long)
 // #2   TfMallocTag::_MallocWrapper(unsigned long, void const*)
 static const size_t _IgnoreStackFramesCount = 3;
@@ -85,7 +85,7 @@ static const size_t _IgnoreStackFramesCount = 3;
 struct Tf_MallocPathNode;
 struct Tf_MallocGlobalData;
 
-static ArchMallocHook _mallocHook;      // zero-initialized POD
+static arch::MallocHook _mallocHook;      // zero-initialized POD
 static Tf_MallocGlobalData* _mallocGlobalData = nullptr;
 std::atomic<bool> TfMallocTag::_isInitialized { false };
 
@@ -674,7 +674,7 @@ Tf_MallocGlobalData::_GetStackTrace(
     
     // Get the stack trace.
     size_t numFrames =
-        ArchGetStackFrames(_MaxMallocStackDepth, skipFrames, buf);
+        arch::GetStackFrames(_MaxMallocStackDepth, skipFrames, buf);
 
     // Copy into stack, reserving exactly enough space.
     stack->assign(buf, buf + numFrames);
@@ -791,7 +791,7 @@ namespace {
 struct _HashMallocStack
 {
     size_t operator()(const vector<uintptr_t> &stack) const {
-        return ArchHash(
+        return arch::Hash(
             (const char *)&stack[0], sizeof(uintptr_t) * stack.size());
     }
 };
@@ -1520,7 +1520,7 @@ _ReportCapturedMallocStacks(
             << "Num allocations: " <<
                 _GetAsCommaSeparatedString(stackInfo.numAllocations) << "\n";
 
-        ArchPrintStackFrames(out, stackInfo.stack);
+        arch::PrintStackFrames(out, stackInfo.stack);
     }
 }
 

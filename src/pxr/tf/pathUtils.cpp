@@ -109,9 +109,9 @@ _GetError(std::string* err)
 {
     if (err->empty()) {
 #if defined(ARCH_OS_WINDOWS)
-        *err = ArchStrSysError(GetLastError());
+        *err = arch::StrSysError(GetLastError());
 #else
-        *err = errno ? ArchStrerror() : std::string();
+        *err = errno ? arch::Strerror() : std::string();
 #endif
     }
 }
@@ -163,7 +163,7 @@ TfRealPath(string const& path, bool allowInaccessibleSuffix, string* error)
 #else
     char resolved[ARCH_PATH_MAX];
     if (!realpath(prefix.c_str(), resolved)) {
-        *error = ArchStrerror(errno);
+        *error = arch::Strerror(errno);
         return string();
     }
     return TfAbsPath(resolved + suffix);
@@ -244,13 +244,13 @@ TfFindLongestAccessiblePrefix(string const &path, string* error)
 string
 TfNormPath(string const &inPath, bool stripDriveSpecifier)
 {
-    return ArchNormPath(inPath, stripDriveSpecifier);
+    return arch::NormPath(inPath, stripDriveSpecifier);
 }
 
 string
 TfAbsPath(string const& path)
 {
-    return ArchAbsPath(path);
+    return arch::AbsPath(path);
 }
 
 string
@@ -276,14 +276,14 @@ TfGetExtension(string const& path)
 string
 TfReadLink(string const& path)
 {
-    return ArchReadLink(path.c_str());
+    return arch::ReadLink(path.c_str());
 }
 
 bool TfIsRelativePath(std::string const& path)
 {
 #if defined(ARCH_OS_WINDOWS)
     return path.empty() ||
-        (PathIsRelativeW(ArchWindowsUtf8ToUtf16(path).c_str()) &&
+        (PathIsRelativeW(arch::WindowsUtf8ToUtf16(path).c_str()) &&
          path[0] != '/' && path[0] != '\\');
 #else
     return path.empty() || path[0] != '/';
@@ -341,7 +341,7 @@ Tf_Glob(
         // backslash.
         string path = prefix + pattern;
             const DWORD attributes =
-                GetFileAttributesW(ArchWindowsUtf8ToUtf16(path).c_str());
+                GetFileAttributesW(arch::WindowsUtf8ToUtf16(path).c_str());
         if (attributes != INVALID_FILE_ATTRIBUTES) {
             // File exists.
 
@@ -376,12 +376,12 @@ Tf_Glob(
         // Glob the leftmost pattern.
         WIN32_FIND_DATAW data;
             HANDLE find = FindFirstFileW(
-                ArchWindowsUtf8ToUtf16(leftmostPattern).c_str(), &data);
+                arch::WindowsUtf8ToUtf16(leftmostPattern).c_str(), &data);
         if (find != INVALID_HANDLE_VALUE) {
             do {
                 // Recurse with next pattern.
                 Tf_Glob(result,
-                        leftmostDir + ArchWindowsUtf16ToUtf8(data.cFileName),
+                        leftmostDir + arch::WindowsUtf16ToUtf8(data.cFileName),
                         remainingPattern, flags);
             } while (FindNextFileW(find, &data));
             FindClose(find);

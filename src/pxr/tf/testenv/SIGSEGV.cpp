@@ -48,7 +48,7 @@ _ThreadTask()
 int
 main(int argc, char **argv)
 {
-    ArchSetFatalStackLogging( true );
+    arch::SetFatalStackLogging( true );
 
     // Make sure handlers have been installed
     // This isn't guaranteed in external environments

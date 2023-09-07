@@ -58,7 +58,7 @@ public:
 
     Tf_EnvSettingRegistry() {
         string fileName = TfGetenv("PIXAR_TF_ENV_SETTING_FILE", "");
-        if (FILE* fp = ArchOpenFile(fileName.c_str(), "r")) {
+        if (FILE* fp = arch::OpenFile(fileName.c_str(), "r")) {
             char buffer[1024];
 
 #ifdef PXR_PYTHON_SUPPORT_ENABLED
@@ -102,9 +102,9 @@ public:
                     continue;
                 }
                     
-                ArchSetEnv(key, value, /*overwrite=*/false);
+                arch::SetEnv(key, value, /*overwrite=*/false);
 #ifdef PXR_PYTHON_SUPPORT_ENABLED
-                if (syncPython && ArchGetEnv(key) == value) {
+                if (syncPython && arch::GetEnv(key) == value) {
                     TfPySetenv(key, value);
                 }
 #endif // PXR_PYTHON_SUPPORT_ENABLED

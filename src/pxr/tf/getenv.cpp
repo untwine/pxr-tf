@@ -34,7 +34,7 @@ namespace pxr {
 string
 TfGetenv(const string& envName, const string& defaultValue)
 {
-    string value = ArchGetEnv(envName);
+    string value = arch::GetEnv(envName);
 
     if (value.empty())
         return defaultValue;
@@ -45,7 +45,7 @@ TfGetenv(const string& envName, const string& defaultValue)
 int
 TfGetenvInt(const string& envName, int defaultValue)
 {
-    string value = ArchGetEnv(envName);
+    string value = arch::GetEnv(envName);
 
     if (value.empty())
         return defaultValue;
@@ -56,7 +56,7 @@ TfGetenvInt(const string& envName, int defaultValue)
 bool
 TfGetenvBool(const string& envName, bool defaultValue)
 {
-    string value = ArchGetEnv(envName);
+    string value = arch::GetEnv(envName);
 
     if (value.empty())
         return defaultValue;
@@ -74,7 +74,7 @@ TfGetenvBool(const string& envName, bool defaultValue)
 double
 TfGetenvDouble(const string& envName, double defaultValue)
 {
-    string value = ArchGetEnv(envName);
+    string value = arch::GetEnv(envName);
 
     if (value.empty())
         return defaultValue;

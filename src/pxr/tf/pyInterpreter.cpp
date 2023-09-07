@@ -68,7 +68,7 @@ TfPyInitialize()
         // Starting with Python 3.7, the GIL is initialized as part of
         // Py_Initialize(). Python 3.9 deprecated explicit GIL initialization.
 #if PY_VERSION_HEX < 0x03070000
-        if (!ArchIsMainThread() && !PyEval_ThreadsInitialized()) {
+        if (!arch::IsMainThread() && !PyEval_ThreadsInitialized()) {
             // Python claims that PyEval_InitThreads "should be called in the
             // main thread before creating a second thread or engaging in any
             // other thread operations."  So we'll issue a warning here.
@@ -77,7 +77,7 @@ TfPyInitialize()
         }
 #endif
 
-        const std::string s = ArchGetExecutablePath();
+        const std::string s = arch::GetExecutablePath();
 
         // Setting the program name is necessary in order for python to 
         // find the correct built-in modules. 
@@ -178,7 +178,7 @@ boost::python::handle<>
 TfPyRunFile(const std::string &filename, int start,
             object const &globals, object const &locals)
 {
-    FILE *f = ArchOpenFile(filename.c_str(), "r");
+    FILE *f = arch::OpenFile(filename.c_str(), "r");
     if (!f) {
         TF_CODING_ERROR("Could not open file '%s'!", filename.c_str());
         return handle<>();

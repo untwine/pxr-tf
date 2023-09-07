@@ -168,7 +168,7 @@ GetLibraryPath(const char* libraryName,
                TfRegistryManager::RegistrationFunctionType func)
 {
     std::string result = libraryName;
-    ArchGetAddressInfo(reinterpret_cast<void*>(func), &result, NULL, NULL,NULL);
+    arch::GetAddressInfo(reinterpret_cast<void*>(func), &result, NULL, NULL,NULL);
     return result;
 }
 
@@ -590,13 +590,13 @@ TfRegistryManager::AddFunctionForUnload(const UnloadFunctionType& func)
 void 
 TfRegistryManager::_SubscribeTo(const type_info& ti)
 {
-    Tf_RegistryManagerImpl::GetInstance().SubscribeTo(ArchGetDemangled(ti));
+    Tf_RegistryManagerImpl::GetInstance().SubscribeTo(arch::GetDemangled(ti));
 }
 
 void
 TfRegistryManager::_UnsubscribeFrom(const type_info& ti)
 {
-    Tf_RegistryManagerImpl::GetInstance().UnsubscribeFrom(ArchGetDemangled(ti));
+    Tf_RegistryManagerImpl::GetInstance().UnsubscribeFrom(arch::GetDemangled(ti));
 }
 
 void

@@ -203,7 +203,7 @@ private:
         } else {
             // CODE_COVERAGE_OFF
             TF_FATAL_ERROR("Destroyed %s out of stack order.",
-                ArchGetDemangled<Derived>().c_str());
+                arch::GetDemangled<Derived>().c_str());
             // CODE_COVERAGE_ON
         }
     }

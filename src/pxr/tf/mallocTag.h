@@ -370,7 +370,7 @@ public:
     /// When memory is allocated or freed for any tag that matches \p
     /// matchList the debugger trap is invoked. If a debugger is attached the
     /// program will stop in the debugger, otherwise the program will continue
-    /// to run. See \c ArchDebuggerTrap() and \c ArchDebuggerWait().
+    /// to run. See \c arch::DebuggerTrap() and \c arch::DebuggerWait().
     ///
     /// \p matchList is a comma, tab or newline separated list of malloc tag
     /// names. The names can have internal spaces but leading and trailing

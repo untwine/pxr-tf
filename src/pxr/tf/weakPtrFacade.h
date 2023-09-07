@@ -228,7 +228,7 @@ private:
     friend std::type_info const &TfTypeid(Derived const &p) {
         if (ARCH_UNLIKELY(!p))
             TF_FATAL_ERROR("Called TfTypeid on invalid %s",
-                           ArchGetDemangled(typeid(Derived)).c_str());
+                           arch::GetDemangled(typeid(Derived)).c_str());
         return typeid(*get_pointer(p));
     }
 

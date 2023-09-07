@@ -41,8 +41,8 @@ namespace pxr {
 /// Open a dynamic library and notify \c lib/tf that a new module has been
 /// loaded.
 ///
-/// This is a wrapper around ArchLibraryOpen() in the sense that this function
-/// calls \c ArchLibraryOpen(\p filename, \p flag) but it will additionally
+/// This is a wrapper around arch::LibraryOpen() in the sense that this function
+/// calls \c arch::LibraryOpen(\p filename, \p flag) but it will additionally
 /// load script bindings if scripting is initialized and loading is requested.
 /// 
 /// If \p error is not \c NULL it will be set to a system reported error

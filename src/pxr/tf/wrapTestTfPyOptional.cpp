@@ -64,7 +64,7 @@ static boost::optional<T>
 _TestOptional(
     const boost::optional<T>& opt)
 {
-    fprintf(stderr, "TestOptional<%s>\n", ArchGetDemangled<T>().c_str());
+    fprintf(stderr, "TestOptional<%s>\n", arch::GetDemangled<T>().c_str());
     return opt;
 }
 

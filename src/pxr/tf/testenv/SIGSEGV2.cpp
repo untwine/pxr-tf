@@ -62,7 +62,7 @@ _ThreadTask()
 int
 main(int argc, char **argv)
 {
-    ArchSetFatalStackLogging( true );
+    arch::SetFatalStackLogging( true );
 
     TfErrorMark m;
 

@@ -61,7 +61,7 @@ TfPrintStackTrace(FILE *file, const string &reason)
 void
 TfPrintStackTrace(std::ostream &out, const string &reason)
 {
-    ArchPrintStackTrace(out, reason);
+    arch::PrintStackTrace(out, reason);
 #ifdef PXR_PYTHON_SUPPORT_ENABLED 
     vector<string> trace = TfPyGetTraceback();
     TF_REVERSE_FOR_ALL(line, trace)
@@ -85,8 +85,8 @@ static int
 _MakeStackFile(std::string *fileName)
 {
     string tmpFile;
-    int fd = ArchMakeTmpFile(ArchStringPrintf("st_%s",
-            ArchGetProgramNameForErrors()), &tmpFile);
+    int fd = arch::MakeTmpFile(arch::StringPrintf("st_%s",
+            arch::GetProgramNameForErrors()), &tmpFile);
 
     if (fileName) {
         *fileName = tmpFile;
@@ -101,16 +101,16 @@ TfLogStackTrace(const std::string &reason, bool logtodb)
     int fd = _MakeStackFile(&tmpFile);
 
     if (fd != -1) {
-        FILE* fout = ArchFdOpen(fd, "w");
+        FILE* fout = arch::FdOpen(fd, "w");
         fprintf(stderr, "Writing stack for %s to %s because of %s.\n",
-            ArchGetProgramNameForErrors(),
+            arch::GetProgramNameForErrors(),
             tmpFile.c_str(), reason.c_str());
         TfPrintStackTrace(fout, reason);
         fclose(fout);
 
         // Attempt to add it to the db
-        if (logtodb && ArchGetFatalStackLogging()) {
-            ArchLogSessionInfo(tmpFile.c_str());
+        if (logtodb && arch::GetFatalStackLogging()) {
+            arch::LogSessionInfo(tmpFile.c_str());
         }
     }
     else {
@@ -133,7 +133,7 @@ TfLogCrash(
     std::string fullMessage = TfStringPrintf(
         "%s crashed. %s: %s\n"
         "in %s at line %zu of %s",
-        ArchGetProgramNameForErrors(), reason.c_str(), message.c_str(),
+        arch::GetProgramNameForErrors(), reason.c_str(), message.c_str(),
         context.GetFunction(), context.GetLine(), context.GetFile());
 
     if (!additionalInfo.empty()) {
@@ -141,14 +141,14 @@ TfLogCrash(
     }
 
     Tf_ScopeDescriptionStackReportLock descStackReport;
-    ArchLogFatalProcessState(
+    arch::LogFatalProcessState(
         nullptr, fullMessage.c_str(), descStackReport.GetMessage());
 }
 
 time_t
 TfGetAppLaunchTime()
 {
-    time_t launchTime = ArchGetAppLaunchTime();
+    time_t launchTime = arch::GetAppLaunchTime();
     if (launchTime == 0)
         TF_RUNTIME_ERROR("Could not determine application launch time.");
     return launchTime;

@@ -50,17 +50,17 @@ TfBaseException::_ThrowImpl(TfCallContext const &cc,
     if (TfGetenvBool("TF_FATAL_THROW", false)) {
         TF_FATAL_ERROR("%s (%s thrown)",
                        exc.what(),
-                       ArchGetDemangled(typeid(exc)).c_str());
+                       arch::GetDemangled(typeid(exc)).c_str());
     }
 
     // Capture a stack trace here, from the throw-point.
     static constexpr size_t ThrowStackDepth = 64;
     // Skip two additional frames, one for this function, and one for
-    // ArchGetStackFrames itself.  Also skip one more if we have a call context,
+    // arch::GetStackFrames itself.  Also skip one more if we have a call context,
     // since that contains all the information for the final throwing frame
     // itself.
     int skipFrames = 2 + skipNCallerFrames + (cc ? 1 : 0);
-    ArchGetStackFrames(ThrowStackDepth, skipFrames, &exc._throwStack);
+    arch::GetStackFrames(ThrowStackDepth, skipFrames, &exc._throwStack);
     exc._callContext = cc;
     thrower();
 }

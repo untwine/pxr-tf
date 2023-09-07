@@ -56,7 +56,7 @@ Test_TfRegistryManagerUnload()
 
     // Compute path to test library.
     std::string libraryPath;
-    TF_AXIOM(ArchGetAddressInfo((void*)Test_TfRegistryManagerUnload, &libraryPath, NULL, NULL, NULL));
+    TF_AXIOM(arch::GetAddressInfo((void*)Test_TfRegistryManagerUnload, &libraryPath, NULL, NULL, NULL));
     libraryPath = TfGetPathName(libraryPath) +
                   "lib" ARCH_PATH_SEP
 #if !defined(ARCH_OS_WINDOWS)
@@ -66,7 +66,7 @@ Test_TfRegistryManagerUnload()
 
     // Make sure that this .so exists
     printf("Checking test shared lib: %s\n", libraryPath.c_str());
-    TF_AXIOM(!ArchFileAccess(libraryPath.c_str(), R_OK));
+    TF_AXIOM(!arch::FileAccess(libraryPath.c_str(), R_OK));
 
     // Load and unload a shared library that has a registration function
     // before anyone subscribes to that type.

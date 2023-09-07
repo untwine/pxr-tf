@@ -135,7 +135,7 @@ Setup()
     if (TfIsDir(topDir))
         TfRmTree(topDir);
     else if (TfPathExists(topDir))
-        ArchUnlinkFile(topDir.c_str());
+        arch::UnlinkFile(topDir.c_str());
 
     TF_FOR_ALL(i, *_SetupData) {
         if (!(TfIsDir(i->dirpath) || TfMakeDirs(i->dirpath)))
@@ -169,7 +169,7 @@ Setup()
 
     if (testSymlinks) {
         // Create a symlink to the top-level directory.
-        ArchUnlinkFile("link_to_a");
+        arch::UnlinkFile("link_to_a");
         TF_AXIOM(TfSymlink("a", "link_to_a"));
     }
 
@@ -186,7 +186,7 @@ TestTfPathExists()
     TF_AXIOM(!TfPathExists(""));
 
     if (testSymlinks) {
-        ArchUnlinkFile("link-to-file");
+        arch::UnlinkFile("link-to-file");
         TfSymlink(knownNoSuchPath, "link-to-file");
         TF_AXIOM(TfPathExists("link-to-file"));
         TF_AXIOM(!TfPathExists("link-to-file", true));
@@ -205,7 +205,7 @@ TestTfIsDir()
     TF_AXIOM(!TfIsDir(""));
 
     if (testSymlinks) {
-        ArchUnlinkFile("link-to-dir");
+        arch::UnlinkFile("link-to-dir");
         TfSymlink(knownDirPath, "link-to-dir");
         TF_AXIOM(!TfIsDir("link-to-dir"));
         TF_AXIOM(TfIsDir("link-to-dir", true));
@@ -224,7 +224,7 @@ TestTfIsFile()
     TF_AXIOM(!TfIsFile(""));
 
     if (testSymlinks) {
-        ArchUnlinkFile("link-to-file");
+        arch::UnlinkFile("link-to-file");
         TfSymlink(knownFilePath, "link-to-file");
         TF_AXIOM(!TfIsFile("link-to-file"));
         TF_AXIOM(TfIsFile("link-to-file", true));
@@ -238,7 +238,7 @@ TestTfIsWritable()
 {
     cout << "Testing TfIsWritable" << endl;
 
-    TF_AXIOM(TfIsWritable(ArchGetTmpDir()));
+    TF_AXIOM(TfIsWritable(arch::GetTmpDir()));
     TF_AXIOM(!TfIsWritable(""));
 #if !defined(ARCH_OS_WINDOWS)
     // We can't be sure these aren't writable on Windows.
@@ -248,7 +248,7 @@ TestTfIsWritable()
 
     TfTouchFile("testTfIsWritable.txt");
     TF_AXIOM(TfIsWritable("testTfIsWritable.txt"));
-    (void) ArchUnlinkFile("testTfIsWritable.txt");
+    (void) arch::UnlinkFile("testTfIsWritable.txt");
 
     return true;
 }
@@ -262,7 +262,7 @@ TestTfIsDirEmpty()
     TF_AXIOM(!TfIsDirEmpty(knownDirPath));
     TF_AXIOM(TfIsDir("empty") || TfMakeDirs("empty"));
     TF_AXIOM(TfIsDirEmpty("empty"));
-    (void) ArchRmDir("empty");
+    (void) arch::RmDir("empty");
     return true;
 }
 
@@ -272,7 +272,7 @@ TestTfSymlink()
     if (testSymlinks) {
         cout << "Testing TfSymlink/TfIsLink" << endl;
 
-        (void) ArchUnlinkFile("test-symlink");
+        (void) arch::UnlinkFile("test-symlink");
 
         TF_AXIOM(!TfIsLink(knownNoSuchPath));
         TF_AXIOM(!TfIsLink(knownFilePath));
@@ -281,7 +281,7 @@ TestTfSymlink()
         TF_AXIOM(TfIsLink("test-symlink"));
         TF_AXIOM(TfReadLink("test-symlink") == knownFilePath);
 
-        (void) ArchUnlinkFile("test-symlink");
+        (void) arch::UnlinkFile("test-symlink");
     }
 
     return true;
@@ -313,7 +313,7 @@ TestTfMakeDir()
 
     // Default permissions
     if (TfIsDir("test-directory-1"))
-        (void) ArchRmDir("test-directory-1");
+        (void) arch::RmDir("test-directory-1");
 
     mode_t oldMask = umask(2);
     TF_AXIOM(TfMakeDir("test-directory-1"));
@@ -328,11 +328,11 @@ TestTfMakeDir()
 #else
     TF_AXIOM(((stbuf.st_mode & ~S_IFMT) & S_IRWXU) == S_IRWXU);
 #endif
-    (void) ArchRmDir("test-directory-1");
+    (void) arch::RmDir("test-directory-1");
 
     // Non-default permissions
     if (TfIsDir("test-directory-2"))
-        (void) ArchRmDir("test-directory-2");
+        (void) arch::RmDir("test-directory-2");
 
     TF_AXIOM(TfMakeDir("test-directory-2", S_IRWXU));
     TF_AXIOM(stat("test-directory-2", &stbuf) != -1);
@@ -343,7 +343,7 @@ TestTfMakeDir()
     TF_AXIOM(((stbuf.st_mode & ~S_IFMT) & S_IRWXU) == S_IRWXU);
 #endif
 
-    (void) ArchRmDir("test-directory-2");
+    (void) arch::RmDir("test-directory-2");
 
     // Parent directories don't exist
     TF_AXIOM(!TfMakeDir("parents/do/not/exist"));
@@ -631,7 +631,7 @@ TestTfTouchFile()
     cout << "Testing TfTouchFile" << endl;
 
     string fileName("test-touchfile");
-    (void) ArchUnlinkFile(fileName.c_str());
+    (void) arch::UnlinkFile(fileName.c_str());
 
     // Touch non-existent file, create = false -> fail...
     TF_AXIOM(!TfTouchFile(fileName, false));
@@ -662,7 +662,7 @@ TestTfTouchFile()
 
     TF_AXIOM(newmTime > oldmTime);
 
-    (void) ArchUnlinkFile(fileName.c_str());
+    (void) arch::UnlinkFile(fileName.c_str());
 
     return true;
 }
@@ -672,8 +672,8 @@ TestSymlinkBehavior()
 {
     cout << "Testing symlink behavior" << endl;
 
-    (void) ArchUnlinkFile("junction");
-    (void) ArchRmDir("junction-target");
+    (void) arch::UnlinkFile("junction");
+    (void) arch::RmDir("junction-target");
 
     TF_AXIOM(TfMakeDir("junction-target"));
 #if defined(ARCH_OS_WINDOWS)

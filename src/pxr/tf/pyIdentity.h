@@ -146,7 +146,7 @@ struct Tf_PyOwnershipHelper<Ptr,
             TfPyLock pyLock;
             if (TfPyIsNone(TfPyGetClassObject<_RefPtrHolder>())) {
                 std::string name =
-                    "__" + ArchGetDemangled(typeid(typename Ptr::DataType)) +
+                    "__" + arch::GetDemangled(typeid(typename Ptr::DataType)) +
                     "__RefPtrHolder";
                 name = TfStringReplace(name, "<", "_");
                 name = TfStringReplace(name, ">", "_");

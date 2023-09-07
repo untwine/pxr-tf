@@ -37,7 +37,7 @@ static
 std::string
 _GetDemangled(const TfRefBase* watched)
 {
-    return watched ? ArchGetDemangled(typeid(*watched)) :
+    return watched ? arch::GetDemangled(typeid(*watched)) :
                      std::string("<unknown>");
 }
 
@@ -46,7 +46,7 @@ static const char* _type[] = { "Add", "Assign" };
 
 // The number of levels in stack traces that are for TfRefPtrTracker itself.
 // Currently these are:
-//   ArchGetStackFrames()
+//   arch::GetStackFrames()
 //   TfRefPtrTracker::AddTrace()
 static const size_t _NumInternalStackLevels = 2;
 
@@ -116,7 +116,7 @@ TfRefPtrTracker::_AddTrace(
         // watched and whether this is a new owner or an assignment to an
         // existing owner.
         Trace& trace = _traces[owner];
-        ArchGetStackFrames(_maxDepth, _NumInternalStackLevels, &trace.trace);
+        arch::GetStackFrames(_maxDepth, _NumInternalStackLevels, &trace.trace);
         trace.obj  = obj;
         trace.type = type;
     }
@@ -186,7 +186,7 @@ TfRefPtrTracker::ReportAllTraces(std::ostream& stream) const
                << std::endl;
         stream << "=============================================================="
                << std::endl;
-        ArchPrintStackFrames(stream, trace.trace);
+        arch::PrintStackFrames(stream, trace.trace);
         stream << std::endl;
     }
 }
@@ -218,7 +218,7 @@ TfRefPtrTracker::ReportTracesForWatched(
                    << std::endl;
             stream << "=============================================================="
                    << std::endl;
-            ArchPrintStackFrames(stream, trace.trace);
+            arch::PrintStackFrames(stream, trace.trace);
             stream << std::endl;
         }
     }

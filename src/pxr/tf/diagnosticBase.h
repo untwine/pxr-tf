@@ -87,8 +87,8 @@ public:
 
     /// Return the source function that the diagnostic message was posted from.
     std::string GetSourceFunction() const {
-        return ArchGetPrettierFunctionName(_context.GetFunction(),
-                                           _context.GetPrettyFunction());
+        return arch::GetPrettierFunctionName(_context.GetFunction(),
+                                            _context.GetPrettyFunction());
     }
 
     /// Add to the commentary string describing this diagnostic message.

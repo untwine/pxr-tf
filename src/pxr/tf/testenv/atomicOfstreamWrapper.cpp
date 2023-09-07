@@ -78,7 +78,7 @@ TestErrorCases()
 static void
 TestCommitToNewFile()
 {
-    ArchUnlinkFile("testTf_NewFileCommit.txt");
+    arch::UnlinkFile("testTf_NewFileCommit.txt");
     TfAtomicOfstreamWrapper wrapper("testTf_NewFileCommit.txt");
     TF_AXIOM(wrapper.Open());
 
@@ -152,7 +152,7 @@ TestCommitSymlink()
     // Create destination file.
     string filePath = TfAbsPath("a/b/c/d/testTf_File.txt");
     {
-        ArchUnlinkFile(filePath.c_str());
+        arch::UnlinkFile(filePath.c_str());
         ofstream ofs(filePath.c_str());
         TF_AXIOM(ofs.good());
         ofs << "Existing Content" << endl;
@@ -161,7 +161,7 @@ TestCommitSymlink()
 
     // Create a symlink to the destination file.
     TF_AXIOM(TfIsFile(filePath.c_str()));
-    ArchUnlinkFile("testTf_Symlink.txt");
+    arch::UnlinkFile("testTf_Symlink.txt");
     TF_AXIOM(TfSymlink(filePath, "testTf_Symlink.txt"));
     TF_AXIOM(TfIsLink("testTf_Symlink.txt"));
 
@@ -194,7 +194,7 @@ TestCommitSymlink()
 static void
 TestCancel()
 {
-    ArchUnlinkFile("testTf_Cancel.txt");
+    arch::UnlinkFile("testTf_Cancel.txt");
     TfAtomicOfstreamWrapper wrapper("testTf_Cancel.txt");
     TF_AXIOM(wrapper.Open());
 
@@ -216,7 +216,7 @@ static void
 TestAutoCancel()
 {
     {
-        ArchUnlinkFile("testTf_AutoCancel.txt");
+        arch::UnlinkFile("testTf_AutoCancel.txt");
         TfAtomicOfstreamWrapper wrapper("testTf_AutoCancel.txt");
         TF_AXIOM(wrapper.Open());
 
@@ -244,7 +244,7 @@ TestFilePermissions()
 #endif
 
     {
-        ArchUnlinkFile("testTf_NewFilePerm.txt");
+        arch::UnlinkFile("testTf_NewFilePerm.txt");
         TfAtomicOfstreamWrapper wrapper("testTf_NewFilePerm.txt");
         TF_AXIOM(wrapper.Open());
         TF_AXIOM(wrapper.Commit());
@@ -259,7 +259,7 @@ TestFilePermissions()
     }
 
     {
-        ArchUnlinkFile("testTf_ExistingFilePerm.txt");
+        arch::UnlinkFile("testTf_ExistingFilePerm.txt");
 #if !defined(ARCH_OS_WINDOWS)
         int fd = open("testTf_ExistingFilePerm.txt", O_CREAT, S_IRUSR|S_IWUSR);
         struct stat est;

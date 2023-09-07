@@ -124,10 +124,10 @@ TfPatternMatcher::_Compile() const
         _recompile = false;
 
         const auto flags =
-            (IsCaseSensitive() ? 0 : ArchRegex::CASE_INSENSITIVE) |
-            (IsGlobPattern()   ? ArchRegex::GLOB : 0);
+            (IsCaseSensitive() ? 0 : arch::Regex::CASE_INSENSITIVE) |
+            (IsGlobPattern()   ? arch::Regex::GLOB : 0);
 
-        _regex = ArchRegex(_pattern, flags);
+        _regex = arch::Regex(_pattern, flags);
     }
 }
 

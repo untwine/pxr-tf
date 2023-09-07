@@ -78,7 +78,7 @@ public:
     }
 
     /// Return the stack frame pointers from the throw point.  See
-    /// ArchPrintStackFrames() to turn these into human-readable strings.
+    /// arch::PrintStackFrames() to turn these into human-readable strings.
     std::vector<uintptr_t> const &GetThrowStack() const {
         return _throwStack;
     }

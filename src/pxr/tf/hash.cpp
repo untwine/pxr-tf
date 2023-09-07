@@ -36,7 +36,7 @@ namespace pxr {
 void
 Tf_HashState::_AppendBytes(char const *bytes, size_t numBytes)
 {
-    _state = ArchHash64(bytes, numBytes, _state);
+    _state = arch::Hash64(bytes, numBytes, _state);
     _didOne = true;
 }
 
@@ -49,7 +49,7 @@ TfHashCharPtr::operator()(const char* ptr) const
 size_t
 TfHashCString::operator()(const char* ptr) const
 {
-    return ptr ? ArchHash(ptr, std::strlen(ptr)) : 0;
+    return ptr ? arch::Hash(ptr, std::strlen(ptr)) : 0;
 }
 
 bool

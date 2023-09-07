@@ -133,12 +133,12 @@ Tf_TerminateHandler()
     catch (std::bad_alloc const &exc) {
         std::set_terminate(Tf_TerminateHandler);
         reason = "allocation failed (you've run out of memory)";
-        type = ArchGetDemangled(typeid(exc));
+        type = arch::GetDemangled(typeid(exc));
     }
     catch (TfBaseException &exc) {
         std::set_terminate(Tf_TerminateHandler);
         reason = exc.what();
-        type = ArchGetDemangled(typeid(exc));
+        type = arch::GetDemangled(typeid(exc));
         if (type.empty()) {
             type = "<unknown TfBaseException subclass>";
         }
@@ -148,7 +148,7 @@ Tf_TerminateHandler()
     catch (std::exception const &exc) {
         std::set_terminate(Tf_TerminateHandler);
         reason = exc.what();
-        type = ArchGetDemangled(typeid(exc));
+        type = arch::GetDemangled(typeid(exc));
     }
     catch (...) {
         std::set_terminate(Tf_TerminateHandler);
@@ -161,18 +161,18 @@ Tf_TerminateHandler()
     }
 
     // This needs to live through the TF_FATAL_ERROR below, since
-    // ArchSetExtraLogInfoForErrors() holds a _pointer_ to this object.
+    // arch::SetExtraLogInfoForErrors() holds a _pointer_ to this object.
     std::vector<std::string> throwStackMsg;
     if (!throwStack.empty()) {
         std::stringstream throwStackText;
-        ArchPrintStackFrames(throwStackText, throwStack);
+        arch::PrintStackFrames(throwStackText, throwStack);
         throwStackMsg = TfStringSplit(throwStackText.str(), "\n");
         std::string throwContextMsg = throwContext ?
             TfStringPrintf("at %s (%s:%zu) ",
                            throwContext.GetFunction(),
                            throwContext.GetFile(),
                            throwContext.GetLine()) : std::string();
-        ArchSetExtraLogInfoForErrors(
+        arch::SetExtraLogInfoForErrors(
             TfStringPrintf("Unhandled %s exception: %s; "
                            "thrown %sfrom ",
                            type.c_str(), reason.c_str(),
@@ -190,12 +190,12 @@ Tf_TerminateHandler()
 
 void TfSetProgramNameForErrors(string const& programName)
 {
-    ArchSetProgramNameForErrors(programName.c_str());
+    arch::SetProgramNameForErrors(programName.c_str());
 }
 
 std::string TfGetProgramNameForErrors()
 {
-    return ArchGetProgramNameForErrors();
+    return arch::GetProgramNameForErrors();
 }
 
 // Called when we get a fatal signal.
@@ -239,7 +239,7 @@ _fatalSignalHandler(int signo)
 
     {
         Tf_ScopeDescriptionStackReportLock descStackReport;
-        ArchLogFatalProcessState(
+        arch::LogFatalProcessState(
             msg, /*message=*/nullptr, descStackReport.GetMessage());
     }
 
@@ -272,7 +272,7 @@ TfInstallTerminateAndCrashHandlers()
     act.sa_sigaction = _fatalSignalHandler;
     act.sa_flags     = SA_SIGINFO;
 
-    // The signal handler (more specifically ArchLogPostMortem) has a
+    // The signal handler (more specifically arch::LogPostMortem) has a
     // flag to prevent it from running concurrently. If it is invoked
     // concurrently, it will simply spin until the other thread is
     // done. But if it is the same thread, then it will deadlock. This

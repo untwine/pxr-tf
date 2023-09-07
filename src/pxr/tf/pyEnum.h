@@ -374,7 +374,7 @@ public:
 
         // First, take either the given name, or the demangled type name.
         std::string enumName = explicitName ? name :
-            TfStringReplace(ArchGetDemangled(typeid(T)), "::", ".");
+            TfStringReplace(arch::GetDemangled(typeid(T)), "::", ".");
 
         // If the name is dotted, take everything before the dot as the base
         // name.  This is used in repr.

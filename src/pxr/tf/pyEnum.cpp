@@ -63,7 +63,7 @@ Tf_PyEnumRegistry::_ConvertEnumToPython(TfEnum const &e)
     // If there is no registered enum object, create a new one of the
     // appropriate type.
     if (!_enumsToObjects.count(e)) {
-        std::string name = ArchGetDemangled(e.GetType());
+        std::string name = arch::GetDemangled(e.GetType());
         name = TfStringReplace(name, " ", "_");
         name = TfStringReplace(name, "::", "_");
         name = TfStringReplace(name, "<", "_");

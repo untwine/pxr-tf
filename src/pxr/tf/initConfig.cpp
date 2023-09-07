@@ -51,7 +51,7 @@ ARCH_CONSTRUCTOR(Tf_InitConfig, 2, void)
         if (!TfMallocTag::Initialize(&errMsg)) {
             fprintf(stderr, "%s: TF_MALLOC_TAG environment variable set, but\n"
                     "            malloc tag initialization failed: %s\n",
-                    ArchGetExecutablePath().c_str(), errMsg.c_str());
+                    arch::GetExecutablePath().c_str(), errMsg.c_str());
         }
         else {
             TfMallocTag::SetCapturedMallocStacksMatchList(capture);

@@ -65,7 +65,7 @@ TfSingleton<T>::_CreateInstance(std::atomic<T *> &instance)
     static std::atomic<bool> isInitializing;
     
     TfAutoMallocTag2 tag("Tf", "TfSingleton::_CreateInstance",
-                         "Create Singleton " + ArchGetDemangled<T>());
+                         "Create Singleton " + arch::GetDemangled<T>());
 
     // Try to take isInitializing false -> true.  If we do it, then check to see
     // if we don't yet have an instance.  If we don't, then we get to create it.

@@ -237,7 +237,7 @@ void Install(object const &self, T const &t, TfErrorMark const &m) {
         // back to python.
         if (!held)
             TfPyThrowRuntimeError("could not construct " +
-                                  ArchGetDemangled(typeid(HeldType)));
+                                  arch::GetDemangled(typeid(HeldType)));
         bp::detail::initialize_wrapper(self.ptr(), &(*(held.operator->())));
         holder->install(self.ptr());
 
@@ -309,7 +309,7 @@ struct CtorBase {
             // CODE_COVERAGE_OFF
             TF_CODING_ERROR("Ctor with signature '%s' is already registered.  "
                             "Duplicate will be ignored.",
-                            ArchGetDemangled(typeid(Sig)).c_str());
+                            arch::GetDemangled(typeid(Sig)).c_str());
             // CODE_COVERAGE_ON
         }
     }
@@ -482,7 +482,7 @@ struct NewCtor<SIGNATURE> : CtorBase<SIGNATURE> {
         bp::object ret = TfPyObject(h);
         if (TfPyIsNone(ret))
             TfPyThrowRuntimeError("could not construct " +
-                                  ArchGetDemangled(typeid(HeldType)));
+                                  arch::GetDemangled(typeid(HeldType)));
 
         bp::detail::initialize_wrapper(ret.ptr(), get_pointer(h));
         // make the object have the right class.
@@ -612,7 +612,7 @@ struct NewCtorWithClassReference<SIGNATURE> : CtorBase<SIGNATURE> {
         bp::object ret = TfPyObject(h);
         if (TfPyIsNone(ret))
             TfPyThrowRuntimeError("could not construct " +
-                                  ArchGetDemangled(typeid(HeldType)));
+                                  arch::GetDemangled(typeid(HeldType)));
 
         bp::detail::initialize_wrapper(ret.ptr(), get_pointer(h));
         // make the object have the right class.

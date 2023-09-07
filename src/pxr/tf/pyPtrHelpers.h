@@ -355,7 +355,7 @@ struct WeakPtr : def_visitor<WeakPtr> {
         } else {
             // CODE_COVERAGE_OFF Can only happen if there's a bug.
             TF_CODING_ERROR("No python registration for '%s'!",
-                            ArchGetDemangled(typeid(WrapperPtrType)).c_str());
+                            arch::GetDemangled(typeid(WrapperPtrType)).c_str());
             // CODE_COVERAGE_ON
         }
         

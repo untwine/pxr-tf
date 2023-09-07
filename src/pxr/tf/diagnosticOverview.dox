@@ -66,7 +66,7 @@ TfWeakPtrFacade::~operator -> () const
     Type *ptr = _FetchPointer();
     if (not ptr)
         TF_FATAL_ERROR("Dereferenced an invalid %s",
-                       ArchGetDemangled(typeid(PtrTemplate<Type>)).c_str());
+                       arch::GetDemangled(typeid(PtrTemplate<Type>)).c_str());
     return ptr;
 }
 \endcode

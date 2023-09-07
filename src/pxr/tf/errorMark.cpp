@@ -80,7 +80,7 @@ TfErrorMark::TfErrorMark()
         TfDebug::IsEnabled(TF_ERROR_MARK_TRACKING)) {
         vector<uintptr_t> trace;
         trace.reserve(64);
-        ArchGetStackFrames(trace.capacity(), &trace);
+        arch::GetStackFrames(trace.capacity(), &trace);
         tbb::spin_mutex::scoped_lock lock(_activeMarkStacksLock);
         TfErrorMark_GetActiveMarkStacks()[this].swap(trace);
     }
@@ -129,7 +129,7 @@ TfReportActiveErrorMarks()
         printf("== TfErrorMark @ %p created from ===========================\n",
                i->first);
         std::stringstream ss;
-        ArchPrintStackFrames(ss, i->second);
+        arch::PrintStackFrames(ss, i->second);
         printf("%s\n", ss.str().c_str());
     }
 }

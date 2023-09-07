@@ -80,7 +80,7 @@ private:
     void _Remove(TfEnum val) {
         tbb::spin_mutex::scoped_lock lock(_tableLock);
 
-        _typeNameToType.erase(ArchGetDemangled(val.GetType()));
+        _typeNameToType.erase(arch::GetDemangled(val.GetType()));
 
         vector<string>& v = _typeNameToNameVector[val.GetType().name()];
         vector<string> original = v;
@@ -115,7 +115,7 @@ void
 TfEnum::_AddName(TfEnum val, const string &valName, const string &displayName)
 {
     TfAutoMallocTag2 tag("Tf", "TfEnum::_AddName");
-    string typeName = ArchGetDemangled(val.GetType());
+    string typeName = arch::GetDemangled(val.GetType());
 
     /*
      * In case valName looks like "stuff::VALUE", strip off the leading
@@ -211,7 +211,7 @@ TfEnum::GetValueFromName(const type_info& ti, const string &name, bool *foundIt)
 {
     bool found = false;
     TfEnum value = GetValueFromFullName(
-        ArchGetDemangled(ti) + "::" + name, &found);
+        arch::GetDemangled(ti) + "::" + name, &found);
 
     // Make sure that the found enum is the correct type.
     found = found && TfSafeTypeCompare(*(value._typeInfo), ti);
@@ -249,7 +249,7 @@ TfEnum::_FatalGetValueError(std::type_info const& typeInfo) const
 {
     TF_FATAL_ERROR("Attempted to get a '%s' from a TfEnum holding "
                    "a '%s'.",
-                   ArchGetDemangled(typeInfo).c_str(),
+                   arch::GetDemangled(typeInfo).c_str(),
                    _typeInfo->name());
 }
 

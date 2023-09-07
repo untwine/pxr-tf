@@ -83,7 +83,7 @@ Tf_HasAttribute(
         resolveSymlinks = true;
 
     const DWORD attribs =
-        GetFileAttributesW(ArchWindowsUtf8ToUtf16(path).c_str());
+        GetFileAttributesW(arch::WindowsUtf8ToUtf16(path).c_str());
     if (attribs == INVALID_FILE_ATTRIBUTES) {
         if (attribute == 0 &&
             (GetLastError() == ERROR_FILE_NOT_FOUND ||
@@ -114,13 +114,13 @@ Tf_HasAttribute(
 #endif
 
 static bool
-Tf_Stat(string const& path, bool resolveSymlinks, ArchStatType* st = 0)
+Tf_Stat(string const& path, bool resolveSymlinks, arch::StatType* st = 0)
 {
     if (path.empty()) {
         return false;
     }
 
-    ArchStatType unused;
+    arch::StatType unused;
     if (!st) {
         st = &unused;
     }
@@ -165,7 +165,7 @@ TfIsDir(string const& path, bool resolveSymlinks)
                     FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT,
                     FILE_ATTRIBUTE_DIRECTORY);
 #else
-    ArchStatType st;
+    arch::StatType st;
     if (Tf_Stat(path, resolveSymlinks, &st)) {
         return S_ISDIR(st.st_mode);
     }
@@ -182,7 +182,7 @@ TfIsFile(string const& path, bool resolveSymlinks)
                     FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT,
                     0);
 #else
-    ArchStatType st;
+    arch::StatType st;
     if (Tf_Stat(path, resolveSymlinks, &st)) {
         return S_ISREG(st.st_mode);
     }
@@ -197,7 +197,7 @@ TfIsLink(string const& path)
     return Tf_HasAttribute(path, /* resolveSymlinks = */ false,
                            FILE_ATTRIBUTE_REPARSE_POINT);
 #else
-    ArchStatType st;
+    arch::StatType st;
     if (Tf_Stat(path, /* resolveSymlinks */ false, &st)) {
         return S_ISLNK(st.st_mode);
     }
@@ -214,9 +214,9 @@ TfIsWritable(string const& path)
     // UID instead of the real UID. 
     return faccessat(AT_FDCWD, path.c_str(), W_OK, AT_EACCESS) == 0;
 #else
-    ArchStatType st;
+    arch::StatType st;
     if (Tf_Stat(path, /* resolveSymlinks */ true, &st)) {
-        return ArchStatIsWritable(&st);
+        return arch::StatIsWritable(&st);
     }
     return false;
 #endif
@@ -228,7 +228,7 @@ TfIsDirEmpty(string const& path)
     if (!TfIsDir(path))
         return false;
 #if defined(ARCH_OS_WINDOWS)
-    return PathIsDirectoryEmptyW(ArchWindowsUtf8ToUtf16(path).c_str()) == TRUE;
+    return PathIsDirectoryEmptyW(arch::WindowsUtf8ToUtf16(path).c_str()) == TRUE;
 #else
     if (DIR *dirp = opendir(path.c_str()))
     {
@@ -253,8 +253,8 @@ bool
 TfSymlink(string const& src, string const& dst)
 {
 #if defined(ARCH_OS_WINDOWS)
-    if (CreateSymbolicLinkW(ArchWindowsUtf8ToUtf16(dst).c_str(),
-                            ArchWindowsUtf8ToUtf16(src).c_str(),
+    if (CreateSymbolicLinkW(arch::WindowsUtf8ToUtf16(dst).c_str(),
+                            arch::WindowsUtf8ToUtf16(src).c_str(),
                             TfIsDir(src) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0)) {
         return true;
     }
@@ -275,9 +275,9 @@ TfSymlink(string const& src, string const& dst)
 bool
 TfDeleteFile(std::string const& path)
 {
-    if (ArchUnlinkFile(path.c_str()) != 0) {
+    if (arch::UnlinkFile(path.c_str()) != 0) {
         TF_RUNTIME_ERROR("Failed to delete '%s': %s", 
-                path.c_str(), ArchStrerror(errno).c_str());
+                path.c_str(), arch::Strerror(errno).c_str());
         return false;
     }
     return true;
@@ -288,7 +288,7 @@ TfMakeDir(string const& path, int mode)
 {
 #if defined(ARCH_OS_WINDOWS)
     return CreateDirectoryW(
-        ArchWindowsUtf8ToUtf16(path).c_str(), nullptr) == TRUE;
+        arch::WindowsUtf8ToUtf16(path).c_str(), nullptr) == TRUE;
 #else
     // Default mode is 0777
     if (mode == -1)
@@ -352,7 +352,7 @@ TfReadDir(
     WIN32_FIND_DATAW fdFile;
     HANDLE hFind = NULL;
 
-    PathCombineW(szPath, ArchWindowsUtf8ToUtf16(dirPath).c_str(), L"*.*");
+    PathCombineW(szPath, arch::WindowsUtf8ToUtf16(dirPath).c_str(), L"*.*");
 
     if((hFind = FindFirstFileW(szPath, &fdFile)) == INVALID_HANDLE_VALUE)
     {
@@ -372,14 +372,14 @@ TfReadDir(
                 {
                     if (dirnames) {
                         dirnames->push_back(
-                            ArchWindowsUtf16ToUtf8(fdFile.cFileName));
+                            arch::WindowsUtf16ToUtf8(fdFile.cFileName));
                     }
                 }
                 else
                 {
                     if (filenames) {
                         filenames->push_back(
-                            ArchWindowsUtf16ToUtf8(fdFile.cFileName));
+                            arch::WindowsUtf16ToUtf8(fdFile.cFileName));
                     }
                 }
             }
@@ -399,7 +399,7 @@ TfReadDir(
     if ((dir = opendir(dirPath.c_str())) == NULL) {
         if (errMsg) {
             *errMsg = TfStringPrintf("opendir failed: %s", 
-                        ArchStrerror(errno).c_str());
+                        arch::Strerror(errno).c_str());
         }
         return false;
     }
@@ -425,7 +425,7 @@ TfReadDir(
 #endif
             // If d_type is not available, or the filesystem has no support
             // for d_type, fall back to lstat.
-            ArchStatType st;
+            arch::StatType st;
             if (fstatat(dirfd(dir), entry.d_name, 
                         &st, AT_SYMLINK_NOFOLLOW) != 0)
                 continue;
@@ -476,7 +476,7 @@ Tf_ReadDir(
 }    
 
 struct Tf_FileId {
-    Tf_FileId(const ArchStatType& st)
+    Tf_FileId(const arch::StatType& st)
         : dev(st.st_dev), ino(st.st_ino)
     { }
 
@@ -516,7 +516,7 @@ Tf_WalkDirsRec(
     // directory from being followed until stat() eventually fails with ELOOP.
     if (followLinks) {
         for (const auto& name : symlinknames) {
-            ArchStatType st;
+            arch::StatType st;
             if (Tf_Stat(string(dirpath + "/" + name).c_str(),
                     /* resolveSymlinks */ true, &st)) {
                 if (S_ISDIR(st.st_mode)) {
@@ -583,26 +583,26 @@ Tf_RmTree(string const& dirpath,
     vector<string>::const_iterator it;
     for (it = filenames.begin(); it != filenames.end(); ++it) {
         string path = dirpath + "/" + *it;
-        if (ArchUnlinkFile(path.c_str()) != 0) {
+        if (arch::UnlinkFile(path.c_str()) != 0) {
             // CODE_COVERAGE_OFF this could happen if the file is removed by
             // another process before we get there, or a file exists but is
             // not writable by us, or the parent directory is not writable by
             // us.
             if (onError) {
                 onError(dirpath, 
-                    TfStringPrintf("ArchUnlinkFile failed for '%s': %s",
-                    path.c_str(), ArchStrerror(errno).c_str()));
+                    TfStringPrintf("arch::UnlinkFile failed for '%s': %s",
+                    path.c_str(), arch::Strerror(errno).c_str()));
             }
             // CODE_COVERAGE_ON
         }
     }
 
-    if (ArchRmDir(dirpath.c_str()) != 0) {
+    if (arch::RmDir(dirpath.c_str()) != 0) {
         // CODE_COVERAGE_OFF this could happen for all the same reasons the
-        // ArchUnlinkFile above could fail.
+        // arch::UnlinkFile above could fail.
         if (onError) {
             onError(dirpath, TfStringPrintf("rmdir failed for '%s': %s",
-                dirpath.c_str(), ArchStrerror(errno).c_str()));
+                dirpath.c_str(), arch::Strerror(errno).c_str()));
         }
         // CODE_COVERAGE_ON
     }
@@ -670,7 +670,7 @@ TfTouchFile(string const &fileName, bool create)
         close(fd);
 #else
             HANDLE fileHandle =
-                ::CreateFileW(ArchWindowsUtf8ToUtf16(fileName).c_str(),
+                ::CreateFileW(arch::WindowsUtf8ToUtf16(fileName).c_str(),
             GENERIC_WRITE,          // open for write
             0,                      // not for sharing
             NULL,                   // default security

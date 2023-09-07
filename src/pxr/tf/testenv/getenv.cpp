@@ -33,51 +33,51 @@ Test_TfGetenv()
 {
     bool status = true;
     std::string testVar = "GetEnvTestsuiteTestVar";
-    ArchSetEnv(testVar.c_str(), "testing", true);
+    arch::SetEnv(testVar.c_str(), "testing", true);
     status &= ( TfGetenv(testVar, "bogusValue") == "testing" );
-    ArchRemoveEnv(testVar.c_str());
+    arch::RemoveEnv(testVar.c_str());
     status &= ( TfGetenv(testVar, "bogusValue") == "bogusValue" );
 
-    ArchSetEnv(testVar.c_str(), "42", true);
+    arch::SetEnv(testVar.c_str(), "42", true);
     status &= ( TfGetenvInt(testVar, 99) == 42 );
-    ArchRemoveEnv(testVar.c_str());
+    arch::RemoveEnv(testVar.c_str());
     status &= ( TfGetenvInt(testVar, 99) == 99 );
 
-    ArchSetEnv(testVar.c_str(), "true", true);
+    arch::SetEnv(testVar.c_str(), "true", true);
     status &= ( TfGetenvBool(testVar, false) == true );
-    ArchRemoveEnv(testVar.c_str());
+    arch::RemoveEnv(testVar.c_str());
     status &= ( TfGetenvBool(testVar, false) == false );
 
-    ArchSetEnv(testVar.c_str(), "TRUE", true);
+    arch::SetEnv(testVar.c_str(), "TRUE", true);
     status &= ( TfGetenvBool(testVar, false) == true );
-    ArchRemoveEnv(testVar.c_str());
+    arch::RemoveEnv(testVar.c_str());
     status &= ( TfGetenvBool(testVar, false) == false );
 
-    ArchSetEnv(testVar.c_str(), "yes", true);
+    arch::SetEnv(testVar.c_str(), "yes", true);
     status &= ( TfGetenvBool(testVar, false) == true );
 
-    ArchSetEnv(testVar.c_str(), "YES", true);
+    arch::SetEnv(testVar.c_str(), "YES", true);
     status &= ( TfGetenvBool(testVar, false) == true );
 
-    ArchSetEnv(testVar.c_str(), "1", true);
+    arch::SetEnv(testVar.c_str(), "1", true);
     status &= ( TfGetenvBool(testVar, false) == true );
 
-    ArchSetEnv(testVar.c_str(), "ON", true);
+    arch::SetEnv(testVar.c_str(), "ON", true);
     status &= ( TfGetenvBool(testVar, false) == true );
 
-    ArchSetEnv(testVar.c_str(), "on", true);
+    arch::SetEnv(testVar.c_str(), "on", true);
     status &= ( TfGetenvBool(testVar, false) == true );
 
-    ArchSetEnv(testVar.c_str(), "false", true);
+    arch::SetEnv(testVar.c_str(), "false", true);
     status &= ( TfGetenvBool(testVar, false) == false );
 
-    ArchSetEnv(testVar.c_str(), "false", true);
+    arch::SetEnv(testVar.c_str(), "false", true);
     status &= ( TfGetenvBool(testVar, true) == false );
 
-    ArchSetEnv(testVar.c_str(), "someothercrap", true);
+    arch::SetEnv(testVar.c_str(), "someothercrap", true);
     status &= ( TfGetenvBool(testVar, false) == false );
 
-    ArchSetEnv(testVar.c_str(), "someothercrap", true);
+    arch::SetEnv(testVar.c_str(), "someothercrap", true);
     status &= ( TfGetenvBool(testVar, true) == false );
 
     return status;

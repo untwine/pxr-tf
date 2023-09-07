@@ -1188,7 +1188,7 @@ TfType::GetCanonicalTypeName(const std::type_info &t)
     }
 
     regLock.UpgradeToWriter();
-    return lookupMap.insert({typeIndex, ArchGetDemangled(t)}).first->second;
+    return lookupMap.insert({typeIndex, arch::GetDemangled(t)}).first->second;
 }
 
 void

@@ -559,7 +559,7 @@ private:
             typedef typename Derived::NoticeType NoticeType;
             TfType ret = TfType::Find<NoticeType>();
             if (ret.IsUnknown())
-                TF_FATAL_ERROR("notice type " + ArchGetDemangled<NoticeType>() +
+                TF_FATAL_ERROR("notice type " + arch::GetDemangled<NoticeType>() +
                                " undefined in the TfType system");
             return ret;
         }

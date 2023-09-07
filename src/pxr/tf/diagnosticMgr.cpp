@@ -129,7 +129,7 @@ void
 Tf_UnhandledAbort()
 {
     constexpr bool logging = true;
-    ArchAbort(!logging);
+    arch::Abort(!logging);
 }
 
 TF_INSTANTIATE_SINGLETON(TfDiagnosticMgr);
@@ -225,7 +225,7 @@ TfDiagnosticMgr::PostError(TfEnum errorCode, const char* errorCodeString,
                            TfDiagnosticInfo info, bool quiet)
 {
     if (TfDebug::IsEnabled(TF_ATTACH_DEBUGGER_ON_ERROR))
-        ArchDebuggerTrap();
+        arch::DebuggerTrap();
 
     const bool logStackTraceOnError =
         TfDebug::IsEnabled(TF_LOG_STACK_TRACE_ON_ERROR);
@@ -295,7 +295,7 @@ TfDiagnosticMgr::PostWarning(
     }
 
     if (TfDebug::IsEnabled(TF_ATTACH_DEBUGGER_ON_WARNING))
-        ArchDebuggerTrap();
+        arch::DebuggerTrap();
 
     const bool logStackTraceOnWarning =
         TfDebug::IsEnabled(TF_LOG_STACK_TRACE_ON_WARNING);
@@ -388,7 +388,7 @@ void TfDiagnosticMgr::PostFatal(TfCallContext const &context,
 
     if (TfDebug::IsEnabled(TF_ATTACH_DEBUGGER_ON_ERROR) ||
         TfDebug::IsEnabled(TF_ATTACH_DEBUGGER_ON_FATAL_ERROR)) {
-        ArchDebuggerTrap();
+        arch::DebuggerTrap();
     }
 
     {
@@ -402,12 +402,12 @@ void TfDiagnosticMgr::PostFatal(TfCallContext const &context,
 
     if (statusCode == TF_DIAGNOSTIC_CODING_ERROR_TYPE) {
         fprintf(stderr, "Fatal coding error: %s [%s], in %s(), %s:%zu\n",
-                msg.c_str(), ArchGetProgramNameForErrors(),
+                msg.c_str(), arch::GetProgramNameForErrors(),
                 context.GetFunction(), context.GetFile(), context.GetLine());
     }
     else if (statusCode == TF_DIAGNOSTIC_RUNTIME_ERROR_TYPE) {
         fprintf(stderr, "Fatal error: %s [%s].\n",
-                msg.c_str(), ArchGetProgramNameForErrors());
+                msg.c_str(), arch::GetProgramNameForErrors());
         exit(1);
     }
     else {
@@ -562,7 +562,7 @@ TfDiagnosticMgr::GetCodeName(const TfEnum &code)
     string codeName = TfEnum::GetDisplayName(code);
     if (codeName.empty()) {
         codeName = TfStringPrintf("(%s)%d",
-            ArchGetDemangled(code.GetType()).c_str(),
+            arch::GetDemangled(code.GetType()).c_str(),
             code.GetValueAsInt());
     }
     return codeName;
@@ -572,7 +572,7 @@ void
 TfDiagnosticMgr::_SetLogInfoForErrors(
     std::vector<std::string> const &logText) const
 {
-    ArchSetExtraLogInfoForErrors(
+    arch::SetExtraLogInfoForErrors(
         TfStringPrintf("Thread %s Pending Diagnostics", 
             TfStringify(std::this_thread::get_id()).c_str()),
         logText.empty() ? nullptr : &logText);
@@ -596,7 +596,7 @@ void
 TfDiagnosticMgr::_LogText::_AppendAndPublishImpl(
     bool clear, ErrorIterator begin, ErrorIterator end)
 {
-    // The requirement at the Arch level for ArchSetExtraLogInfoForErrors is
+    // The requirement at the Arch level for arch::SetExtraLogInfoForErrors is
     // that the pointer we hand it must remain valid, and we can't mutate the
     // structure it points to since if another thread crashes, Arch will read it
     // to generate the crash report.  So instead we maintain two copies.  We
@@ -617,7 +617,7 @@ TfDiagnosticMgr::_LogText::_AppendAndPublishImpl(
     }
 
     // Publish.
-    ArchSetExtraLogInfoForErrors(
+    arch::SetExtraLogInfoForErrors(
         TfStringPrintf("Thread %s Pending Diagnostics", 
                        TfStringify(std::this_thread::get_id()).c_str()),
         first->empty() ? nullptr : first);
@@ -656,14 +656,14 @@ TfDiagnosticMgr::FormatDiagnostic(const TfEnum &code,
         !strcmp(context.GetFunction(), "") || !strcmp(context.GetFile(), "")) {
         output = TfStringPrintf("%s%s: %s [%s]\n",
                                 codeName.c_str(),
-                                ArchIsMainThread() ? "" : " (secondary thread)",
+                                arch::IsMainThread() ? "" : " (secondary thread)",
                                 msg.c_str(),
-                                ArchGetProgramNameForErrors());
+                                arch::GetProgramNameForErrors());
     }
     else {
         output = TfStringPrintf("%s%s: in %s at line %zu of %s -- %s\n",
                                 codeName.c_str(),
-                                ArchIsMainThread() ? "" : " (secondary thread)",
+                                arch::IsMainThread() ? "" : " (secondary thread)",
                                 context.GetFunction(),
                                 context.GetLine(),
                                 context.GetFile(),

@@ -143,8 +143,8 @@ Tf_PostNullSmartPtrDereferenceFatalError(
 {
     Tf_DiagnosticHelper(ctx, TF_DIAGNOSTIC_FATAL_ERROR_TYPE)
         .IssueFatalError("attempted member lookup on NULL %s",
-                         ArchGetDemangled(typeName).c_str());
-    ArchAbort();
+                         arch::GetDemangled(typeName).c_str());
+    arch::Abort();
 }
 
 }  // namespace pxr

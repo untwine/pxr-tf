@@ -90,7 +90,7 @@ TestErrorCases()
 static void
 TestReplaceNewFile()
 {
-    ArchUnlinkFile("testTf_NewFileCommit.txt");
+    arch::UnlinkFile("testTf_NewFileCommit.txt");
     auto outf = TfSafeOutputFile::Replace("testTf_NewFileCommit.txt");
     TF_AXIOM(outf.Get());
 
@@ -198,7 +198,7 @@ TestReplaceSymlink()
     // Create destination file.
     string filePath = TfAbsPath("a/b/c/d/testTf_File.txt");
     {
-        ArchUnlinkFile(filePath.c_str());
+        arch::UnlinkFile(filePath.c_str());
         ofstream ofs(filePath.c_str());
         TF_AXIOM(ofs.good());
         ofs << "Existing Content" << endl;
@@ -207,7 +207,7 @@ TestReplaceSymlink()
 
     // Create a symlink to the destination file.
     TF_AXIOM(TfIsFile(filePath.c_str()));
-    ArchUnlinkFile("testTf_Symlink.txt");
+    arch::UnlinkFile("testTf_Symlink.txt");
     TF_AXIOM(TfSymlink(filePath, "testTf_Symlink.txt"));
     TF_AXIOM(TfIsLink("testTf_Symlink.txt"));
 
@@ -246,7 +246,7 @@ TestFilePermissions()
 #endif
 
     {
-        ArchUnlinkFile("testTf_NewFilePerm.txt");
+        arch::UnlinkFile("testTf_NewFilePerm.txt");
         auto outf = TfSafeOutputFile::Replace("testTf_NewFilePerm.txt");
         TF_AXIOM(outf.Get());
         outf.Close();
@@ -261,7 +261,7 @@ TestFilePermissions()
     }
 
     {
-        ArchUnlinkFile("testTf_ExistingFilePerm.txt");
+        arch::UnlinkFile("testTf_ExistingFilePerm.txt");
 #if !defined(ARCH_OS_WINDOWS)
         int fd = open("testTf_ExistingFilePerm.txt", O_CREAT, S_IRUSR|S_IWUSR);
         struct stat est;

@@ -306,7 +306,7 @@ namespace pxr {
 ///
 /// \hideinitializer
 #define TF_FUNC_NAME()                                 \
-    ArchGetPrettierFunctionName(__ARCH_FUNCTION__, __ARCH_PRETTY_FUNCTION__)
+    arch::GetPrettierFunctionName(__ARCH_FUNCTION__, __ARCH_PRETTY_FUNCTION__)
 
 void Tf_TerminateHandler();
 
@@ -428,12 +428,12 @@ Tf_VerifyStringFormat(const char *format, ...) ARCH_PRINTF_FUNCTION(1, 2);
 
 /// Sets program name for reporting errors.
 ///
-/// This function simply calls to ArchSetProgramNameForErrors().
+/// This function simply calls to arch::SetProgramNameForErrors().
 void TfSetProgramNameForErrors(std::string const& programName);
 
 /// Returns currently set program info. 
 ///
-/// This function simply calls to ArchGetProgramNameForErrors().
+/// This function simply calls to arch::GetProgramNameForErrors().
 std::string TfGetProgramNameForErrors();
 
 /// \private

@@ -332,7 +332,7 @@ TfPyGetStackFrames(vector<uintptr_t> *frames)
         size_t size = len(stack);
         frames->reserve(size);
         // Reverse the order of stack frames so that the stack is ordered 
-        // like the output of ArchGetStackFrames() (deepest function call at 
+        // like the output of arch::GetStackFrames() (deepest function call at
         // the top of stack).
         for (long i = static_cast<long>(size)-1; i >= 0; --i) {
             string *s = new string(extract<string>(stack[i]));
