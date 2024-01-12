@@ -26,45 +26,120 @@
 
 /// \file tf/unicodeUtils.h
 /// \ingroup group_tf_String
+/// Definitions of basic UTF-8 utilities in tf.
 
 #include "pxr/pxr.h"
 #include "pxr/base/tf/api.h"
 #include "pxr/base/tf/diagnostic.h"
-#include "pxr/base/tf/unicodeCharacterClasses.h"
 
-#include <optional>
+#include <ostream>
 #include <string>
 #include <string_view>
 
 PXR_NAMESPACE_OPEN_SCOPE
 
+/// \class TfUtf8CodePoint
+/// \ingroup group_tf_String
+///
+/// Wrapper for a 32-bit code point value that can be encoded as UTF-8.
+///
+/// \code{.cpp}
+/// // Stream operator overload encodes each code point as UTF-8.
+/// std::stringstream s;
+/// s << TfUtf8CodePoint(8747) << " " << TfUtf8CodePoint(120);
+/// \endcode
+/// A single `TfUtf8CodePoint` may be converted to a string using
+/// `TfStringify` as well.
+class TfUtf8CodePoint {
+public:
+    /// Code points that cannot be decoded or are outside of the valid range
+    /// will be replaced with this value.
+    static constexpr uint32_t ReplacementValue = 0xFFFD;
+
+    /// Values higher than this will be replaced with the replacement
+    /// code point.
+    static constexpr uint32_t MaximumValue = 0x10FFFF;
+
+    /// Values in this range (inclusive) cannot be constructed and will be
+    /// replaced by the replacement code point.
+    static constexpr std::pair<uint32_t, uint32_t>
+    SurrogateRange = {0xD800, 0xDFFF};
+
+    /// Construct a code point initialized to the replacement value
+    constexpr TfUtf8CodePoint() = default;
+
+    /// Construct a UTF-8 valued code point, constrained by the maximum value
+    /// and surrogate range.
+    constexpr explicit TfUtf8CodePoint(uint32_t value) :
+        _value(((value <= MaximumValue) &&
+                ((value < SurrogateRange.first) ||
+                 (value > SurrogateRange.second))) ?
+               value : ReplacementValue) {}
+
+    constexpr uint32_t AsUInt32() const { return _value; }
+
+    friend constexpr bool operator==(const TfUtf8CodePoint left,
+                                     const TfUtf8CodePoint right) {
+        return left._value == right._value;
+    }
+    friend constexpr bool operator!=(const TfUtf8CodePoint left,
+                                     const TfUtf8CodePoint right) {
+        return left._value != right._value;
+    }
+
+private:
+    uint32_t _value{ReplacementValue};
+};
+
+TF_API std::ostream& operator<<(std::ostream&, const TfUtf8CodePoint);
+
+/// The replacement code point can be used to signal that a code point could
+/// not be decoded and needed to be replaced.
+constexpr TfUtf8CodePoint TfUtf8InvalidCodePoint{
+    TfUtf8CodePoint::ReplacementValue};
+
 class TfUtf8CodePointIterator;
 
+/// \class TfUtf8CodePointView
+/// \ingroup group_tf_String
+///
 /// Wrapper for a UTF-8 encoded `std::string_view` that can be iterated over
 /// as code points instead of bytes.
 ///
-/// Because of the variable length encoding, the `Utf8StringView` iterator is
-/// a ForwardIterator and is read only.
+/// Because of the variable length encoding, the `TfUtf8CodePointView` iterator
+/// is a ForwardIterator and is read only.
 ///
 /// \code{.cpp}
 /// std::string value{"∫dx"};
-/// TfUtf8CodePointView view{value};
-/// for (const uint32_t codePoint : view) {
-///     if (codePoint == TfTfUtf8CodePointIterator::INVALID_CODE_POINT) {
+/// for (const uint32_t codePoint : TfUtf8CodePointView{value}) {
+///     if (codePoint == TfUtf8InvalidCodePoint.AsUInt32()) {
 ///         TF_WARN("String cannot be decoded.");
+///         break;
 ///     }
 /// }
-/// (The TfUtf8CodePointView's sentinel end() will make it compatible with
-///  the STL ranges library).
+/// \endcode
+///
+/// The `TfUtf8CodePointView`'s sentinel `end()` is compatible with range
+/// based for loops and the forthcoming STL ranges library; it avoids
+/// triplicating the storage for the end iterator. `EndAsIterator()`
+/// can be used for algorithms that require the begin and end iterators to be
+/// of the same type but necessarily stores redundant copies of the endpoint.
+///
+/// \code{.cpp}
+/// if (std::any_of(std::cbegin(codePointView), codePointView.EndAsIterator(),
+///     [](const auto c) { return c == TfUtf8InvalidCodePoint.AsUInt32(); }))
+/// {
+///     TF_WARN("String cannot be decoded");
+/// }
 /// \endcode
 class TfUtf8CodePointView final {
 public:
     using const_iterator = TfUtf8CodePointIterator;
 
-    /// Model iteration ending when the underlying string_view's end iterator
+    /// Model iteration ending when the underlying `string_view`'s end iterator
     /// has been exceeded. This guards against strings whose variable length
     /// encoding pushes the iterator past the end of the underlying
-    /// string_view.
+    /// `string_view`.
     class PastTheEndSentinel final {};
 
     TfUtf8CodePointView() = default;
@@ -72,8 +147,8 @@ public:
 
     inline const_iterator begin() const;
 
-    /// The sentinel will compare as equal with any iterator at or past the end
-    /// of the underlying string_view
+    /// The sentinel will compare as equal with any iterator at the end
+    /// of the underlying `string_view`
     PastTheEndSentinel end() const
     {
         return PastTheEndSentinel{};
@@ -81,8 +156,8 @@ public:
 
     inline const_iterator cbegin() const;
 
-    /// The out of range sentinel will compare as equal with any iterator
-    /// at or past the end of the underlying string_view's
+    /// The sentinel will compare as equal with any iterator at the end
+    /// of the underlying `string_view`
     PastTheEndSentinel cend() const
     {
         return end();
@@ -94,6 +169,18 @@ public:
         return _view.empty();
     }
 
+    /// Returns an iterator of the same type as `begin` that identifies the end
+    /// of the string.
+    ///
+    /// As the end iterator is stored three times, this is slightly heavier
+    /// than using the `PastTheEndSentinel` and should be avoided in performance
+    /// critical code paths. It is provided for convenience when an algorithm
+    /// restricts the iterators to have the same type.
+    ///
+    /// As C++20 ranges exposes more sentinel friendly algorithms, this can
+    /// likely be deprecated in the future.
+    inline const_iterator EndAsIterator() const;
+
 private:
     std::string_view _view;
 };
@@ -102,10 +189,9 @@ private:
 /// code point values.
 ///
 /// UTF-8 is a variable length encoding, meaning that one Unicode
-/// character can be encoded in UTF-8 as 1, 2, 3, or 4 bytes.  This
-/// iterator takes care of iterating the necessary characters in a string
-/// and extracing the Unicode code point of each UTF-8 encoded character
-/// in the sequence.
+/// code point can be encoded in UTF-8 as 1, 2, 3, or 4 bytes.  This
+/// iterator takes care of consuming the valid UTF-8 bytes for a
+/// code point while incrementing.
 class TfUtf8CodePointIterator final {
 public:
     using iterator_category = std::forward_iterator_tag;
@@ -114,28 +200,14 @@ public:
     using pointer = void;
     using reference = uint32_t;
 
-    static constexpr uint32_t INVALID_CODE_POINT = 0xFFFD;
-
-    /// Retrieves the next UTF-8 character in the sequence as its Unicode
-    /// code point value. Returns INVALID_CODE_POINT when the byte sequence
-    /// pointed to by the iterator cannot be decoded.
+    /// Retrieves the current UTF-8 character in the sequence as its Unicode
+    /// code point value. Returns `TfUtf8InvalidCodePoint.AsUInt32()` when the
+    /// byte sequence pointed to by the iterator cannot be decoded.
     ///
-    /// If during read of the UTF-8 character sequence the underlying
-    /// string iterator would go beyond \a end defined at construction
-    /// time, a std::out_of_range exception will be thrown.
+    /// A code point might be invalid because it's incorrectly encoded, exceeds
+    /// the maximum allowed value, or is in the disallowed surrogate range.
     uint32_t operator* () const
     {
-        // If the current UTF-8 character is invalid, instead of
-        // throwing an exception, _GetCodePoint signals this is
-        // bad by setting the code point to 0xFFFD (this mostly happens
-        // when a high / low private surrogate is used)
-        // TODO: note that this isn't precisely conformant, as we
-        // likely consumed an entire sequence when a subset would have
-        // been invalid e.g. the byte sequence C2 41 would be detected
-        // as a 2-byte  sequence, but it is invalid because of the
-        // second byte signature by the standard, this should process
-        // the C2 as invalid but consume 41 as a valid 1-byte UTF-8
-        // character
         return _GetCodePoint();
     }
 
@@ -147,7 +219,8 @@ public:
 
     /// Determines if two iterators are equal.
     /// This intentionally does not consider the end iterator to allow for
-    /// comparison of iterators between substring views.
+    /// comparison of iterators between different substring views of the
+    /// same underlying string.
     bool operator== (const TfUtf8CodePointIterator& rhs) const
     {
         return (this->_it == rhs._it);
@@ -155,7 +228,8 @@ public:
 
     /// Determines if two iterators are unequal.
     /// This intentionally does not consider the end iterator to allow for
-    /// comparison of iterators between substring views.
+    /// comparison of iterators between different substring views of the
+    /// same underlying string.
     bool operator!= (const TfUtf8CodePointIterator& rhs) const
     {
         return (this->_it != rhs._it);
@@ -164,38 +238,49 @@ public:
     /// Advances the iterator logically one UTF-8 character sequence in
     /// the string. The underlying string iterator will be advanced
     /// according to the variable length encoding of the next UTF-8
-    /// character. Invalid leading bytes will increment until the end
-    /// of the range is reached.
+    /// character, but will never consume non-continuation bytes after
+    /// the current one.
     TfUtf8CodePointIterator& operator++ ()
     {
-        // note that in cases where the encoding is invalid, we move to the
-        // next byte this is necessary because otherwise the iterator would
-        // never advanced and the end condition of == iterator::end() would
-        // never be satisfied
-        _EncodingLength encodingLength = _GetEncodingLength();
-        std::advance(_it, (encodingLength != 0) ? encodingLength : 1);
-        if (_IsPastTheEnd()) {
-            _it = _end;
+        // The increment operator should never be called if it's past
+        // the end. The user is expected to have already checked this
+        // condition.
+        TF_DEV_AXIOM(!_IsPastTheEnd());
+        _EncodingLength increment = _GetEncodingLength();
+        // Note that in cases where the encoding is invalid, we move to the
+        // next byte. This is necessary because otherwise the iterator would
+        // never advance and the end condition of == iterator::end() would
+        // never be satisfied. This means that we increment, even if the
+        // encoding length is 0.
+        ++_it;
+        // Only continuation bytes will be consumed after the the first byte.
+        // This avoids consumption of ASCII characters or other starting bytes.
+        auto isContinuation = [](const char c) {
+            const auto uc = static_cast<unsigned char>(c);
+            return (uc >= static_cast<unsigned char>('\x80')) &&
+                   (uc < static_cast<unsigned char>('\xc0'));
+        };
+        while ((increment > 1) && !_IsPastTheEnd() && isContinuation(*_it)) {
+            ++_it;
+            --increment;
         }
         return *this;
     }
 
-    /// Advances the iterator logically one UTF-8 character sequence in the
-    /// string. The underlying string iterator will be advanced according
-    /// to the variable length encoding of the next UTF-8 character.
+    /// Advances the iterator logically one UTF-8 character sequence in
+    /// the string. The underlying string iterator will be advanced
+    /// according to the variable length encoding of the next UTF-8
+    /// character, but will never consume non-continuation bytes after
+    /// the current one.
     TfUtf8CodePointIterator operator++ (int)
     {
-        // note that in cases where the encoding is invalid, we move to the
-        // next byte this is necessary because otherwise the iterator would
-        // never advanced and the end condition of == iterator::end() would
-        // never be satisfied
         auto temp = *this;
         ++(*this);
         return temp;
     }
 
     /// Checks if the `lhs` iterator is at or past the end for the
-    /// underlying string_view
+    /// underlying `string_view`
     friend bool operator==(const TfUtf8CodePointIterator& lhs,
                            TfUtf8CodePointView::PastTheEndSentinel)
     {
@@ -223,6 +308,10 @@ private:
     // Constructs an iterator that can read UTF-8 character sequences from
     // the given starting string_view iterator \a it. \a end is used as a
     // guard against reading byte sequences past the end of the source string.
+    //
+    // When working with views of substrings, \a end must not point to a
+    // continuation byte in a valid UTF-8 byte sequence to avoid decoding
+    // errors.
     TfUtf8CodePointIterator(
         const std::string_view::const_iterator& it,
         const std::string_view::const_iterator& end) : _it(it), _end(end) {
@@ -252,15 +341,15 @@ private:
         {
             return 1;
         }
-        else if ((x >> 5) == 0x6)
+        else if ((x >= 0xc0) && (x < 0xe0))
         {
             return 2;
         }
-        else if ((x >> 4) == 0xe)
+        else if ((x >= 0xe0) && (x < 0xf0))
         {
             return 3;
         }
-        else if ((x >> 3) == 0x1e)
+        else if ((x >= 0xf0) && (x < 0xf8))
         {
             return 4;
         }
@@ -302,6 +391,12 @@ inline TfUtf8CodePointView::const_iterator TfUtf8CodePointView::cbegin() const
     return begin();
 }
 
+inline TfUtf8CodePointView::const_iterator
+TfUtf8CodePointView::EndAsIterator() const
+{
+    return const_iterator(std::cend(_view), std::cend(_view));
+}
+
 /// Determines whether the given Unicode \a codePoint is in the XID_Start
 /// character class.
 ///
@@ -312,10 +407,7 @@ inline TfUtf8CodePointView::const_iterator TfUtf8CodePointView::cbegin() const
 /// That is, the character must have a category of Lu | Ll | Lt | Lm | Lo | Nl
 ///
 TF_API
-inline bool TfIsUtf8CodePointXidStart(uint32_t codePoint)
-{
-    return TfUnicodeGetXidStartFlagData().IsXidStartCodePoint(codePoint);
-}
+bool TfIsUtf8CodePointXidStart(uint32_t codePoint);
 
 /// Determines whether the given Unicode \a codePoint is in the XID_Continue
 /// character class.
@@ -327,10 +419,7 @@ inline bool TfIsUtf8CodePointXidStart(uint32_t codePoint)
 /// XID_Start | Nd | Mn | Mc | Pc
 ///
 TF_API
-inline bool TfIsUtf8CodePointXidContinue(uint32_t codePoint)
-{
-    return TfUnicodeGetXidContinueFlagData().IsXidContinueCodePoint(codePoint);
-}
+bool TfIsUtf8CodePointXidContinue(uint32_t codePoint);
 
 PXR_NAMESPACE_CLOSE_SCOPE
 
