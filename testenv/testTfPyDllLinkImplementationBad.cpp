@@ -1,5 +1,5 @@
 //
-// Copyright 2016 Pixar
+// Copyright 2023 Pixar
 //
 // Licensed under the Apache License, Version 2.0 (the "Apache License")
 // with the following modification; you may not use this file except in
@@ -21,4 +21,12 @@
 // KIND, either express or implied. See the Apache License for the specific
 // language governing permissions and limitations under the Apache License.
 //
-#include "pxr/base/tf/refCount.h"
+
+#include <cstdio>
+
+extern "C"
+__declspec(dllexport)
+int testTfPyDllLinkImplementation() {
+    printf("Bad implementation - returning 0xBAD...\n");
+    return 0xBAD;
+}
