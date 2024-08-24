@@ -1,8 +1,9 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
+//
+// Modified by Jeremy Retailleau.
 //
 // Wrap one of various unordered map implementations.  The exposed API
 // is similar to std::unordered_map but is missing some methods and

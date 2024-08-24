@@ -1,9 +1,10 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
+// Modified by Jeremy Retailleau.
+
 /*
  * This header is not meant to be included in a .h file.
  * Complain if we see this header twice through.

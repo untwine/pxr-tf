@@ -1,0 +1,15 @@
+include(CMakeFindDependencyMacro)
+
+@PACKAGE_INIT@
+
+find_dependency(pxr-arch REQUIRED)
+find_dependency(TBB 2017.0 REQUIRED)
+
+if(BUILD_PYTHON_BINDINGS)
+    find_dependency(Python REQUIRED COMPONENTS Interpreter Development)
+
+    set(_py_version ${Python_VERSION_MAJOR}${Python_VERSION_MINOR})
+    find_dependency(Boost 1.80.0 REQUIRED COMPONENTS python${_py_version})
+endif()
+
+include(${CMAKE_CURRENT_LIST_DIR}/pxr-tf-targets.cmake)

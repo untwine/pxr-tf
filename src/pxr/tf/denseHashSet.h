@@ -1,9 +1,10 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
+// Modified by Jeremy Retailleau.
+
 #ifndef PXR_TF_DENSE_HASH_SET_H
 #define PXR_TF_DENSE_HASH_SET_H
 

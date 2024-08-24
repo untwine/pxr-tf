@@ -1,8 +1,9 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
+//
+// Modified by Jeremy Retailleau.
 //
 // Wrap one of various unordered set implementations.  The exposed API
 // is similar to std::unordered_set but is missing some methods and

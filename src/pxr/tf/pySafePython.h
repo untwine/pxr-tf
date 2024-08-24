@@ -1,9 +1,10 @@
-//
 // Copyright 2020 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
+// Modified by Jeremy Retailleau.
+
 #ifndef PXR_TF_PY_SAFE_PYTHON_H
 #define PXR_TF_PY_SAFE_PYTHON_H
 

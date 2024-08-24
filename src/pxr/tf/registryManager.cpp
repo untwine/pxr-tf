@@ -1,8 +1,9 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
+//
+// Modified by Jeremy Retailleau.
 //
 // The registry manager is used to lazily run code needed by consumers of
 // some type.  This code is found automatically by the registry manager

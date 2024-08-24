@@ -1,9 +1,9 @@
-//
 // Copyright 2023 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
+// Modified by Jeremy Retailleau.
 
 #ifndef PXR_TF_FUNCTION_TRAITS_H
 #define PXR_TF_FUNCTION_TRAITS_H

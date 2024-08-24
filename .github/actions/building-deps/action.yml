@@ -1,0 +1,85 @@
+name: building-deps
+description: "Install Build Dependencies"
+
+inputs:
+  boost:
+    description: "Boost version targeted"
+
+  onetbb:
+    description: "oneTBB version targeted"
+
+  python:
+    description: "Python version targeted"
+
+  path:
+    description: "Path to install dependencies into"
+
+runs:
+  using: composite
+  steps:
+    - name: Install conan
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install conan==2.*
+        conan profile detect
+        conan profile show
+
+    - name: Install numpy
+      shell: bash
+      # For some reason, boost python cannot be installed without numpy
+      # https://github.com/conan-io/conan-center-index/issues/10953
+      run: python -m pip install numpy==1.*
+
+    - name: Install Boost Python + oneTBB
+      shell: bash
+      working-directory: ${{runner.temp}}
+      run: |
+        conan install \
+        --requires boost/${{ inputs.boost }} \
+        --requires onetbb/${{ inputs.onetbb }} \
+        --output-folder="${{ inputs.path }}" \
+        --options=*:shared=True \
+        --options=boost/*:without_python=False \
+        --options=boost/*:without_atomic=True \
+        --options=boost/*:without_chrono=True \
+        --options=boost/*:without_container=True \
+        --options=boost/*:without_context=True \
+        --options=boost/*:without_contract=True \
+        --options=boost/*:without_coroutine=True \
+        --options=boost/*:without_date_time=True \
+        --options=boost/*:without_exception=True \
+        --options=boost/*:without_fiber=True \
+        --options=boost/*:without_filesystem=True \
+        --options=boost/*:without_graph=True \
+        --options=boost/*:without_iostreams=True \
+        --options=boost/*:without_json=True \
+        --options=boost/*:without_locale=True \
+        --options=boost/*:without_log=True \
+        --options=boost/*:without_math=True \
+        --options=boost/*:without_nowide=True \
+        --options=boost/*:without_program_options=True \
+        --options=boost/*:without_random=True \
+        --options=boost/*:without_regex=True \
+        --options=boost/*:without_serialization=True \
+        --options=boost/*:without_stacktrace=True \
+        --options=boost/*:without_system=False \
+        --options=boost/*:without_test=True \
+        --options=boost/*:without_thread=True \
+        --options=boost/*:without_timer=True \
+        --options=boost/*:without_type_erasure=True \
+        --options=boost/*:without_wave=True \
+        --options=boost/*:python_version=${{ inputs.python }} \
+        --generator=CMakeDeps \
+        --build=missing
+
+    - name: Build Pxr Arch
+      shell: bash
+      working-directory: ${{runner.temp}}
+      run: |
+        git clone https://github.com/untwine/pxr-arch.git
+        cmake -S pxr-arch -B pxr-arch-build \
+          -D "BUILD_DOCS=OFF" \
+          -D "BUILD_TESTS=OFF" \
+          -D "CMAKE_INSTALL_PREFIX=${{ inputs.path }}"
+        cmake --build pxr-arch-build --config Release --target install

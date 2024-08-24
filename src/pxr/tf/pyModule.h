@@ -1,9 +1,10 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
+// Modified by Jeremy Retailleau.
+
 #ifdef PXR_TF_PY_MODULE_H
 #error This file should only be included once in any given source (.cpp) file.
 #endif

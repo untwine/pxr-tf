@@ -1,8 +1,9 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
+//
+// Modified by Jeremy Retailleau.
 //
 // Do not include pyModule.h or we'd need an implementation of WrapModule().
 //#include "./pyModule.h"

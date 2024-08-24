@@ -5,6 +5,8 @@
 # Licensed under the terms set forth in the LICENSE.txt file available at
 # https://openusd.org/license.
 #
+# Modified by Jeremy Retailleau.
+#
 # A script for generating the character class sets for XID_Start and
 # XID_Continue character classes.  This takes a source UnicodeData.txt
 # from the Unicode standard and generates C++ source files that populate

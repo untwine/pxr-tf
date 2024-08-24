@@ -1,8 +1,9 @@
-//
 // Copyright 2016 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
+//
+// Modified by Jeremy Retailleau.
 //
 //todo: cleanup: TF_DEFINE_PRIVATE_TOKENS, should use the public versions
 //todo: cleanup: document each macro extensively

@@ -1,9 +1,9 @@
-//
 // Copyright 2024 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
+// Modified by Jeremy Retailleau.
 
 #ifndef PXR_TF_DELEGATED_COUNT_PTR_H
 #define PXR_TF_DELEGATED_COUNT_PTR_H
