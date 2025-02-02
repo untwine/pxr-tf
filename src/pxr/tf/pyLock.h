@@ -171,7 +171,7 @@ private:
 ///
 /// \hideinitializer
 #define TF_PY_ALLOW_THREADS_IN_SCOPE()                  \
-    TfPyEnsureGILUnlockedObj __py_lock_allow_threads__
+    PXR_NS::TfPyEnsureGILUnlockedObj __py_lock_allow_threads__
 
 TF_NAMESPACE_CLOSE_SCOPE
 

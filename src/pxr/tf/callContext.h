@@ -28,7 +28,7 @@ TF_NAMESPACE_OPEN_SCOPE
 
 /// \hideinitializer
 #define TF_CALL_CONTEXT \
-TfCallContext(__ARCH_FILE__, __ARCH_FUNCTION__, __LINE__, __ARCH_PRETTY_FUNCTION__)
+PXR_NS::TfCallContext(__ARCH_FILE__, __ARCH_FUNCTION__, __LINE__, __ARCH_PRETTY_FUNCTION__)
 
 class TfCallContext
 {

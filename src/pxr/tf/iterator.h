@@ -371,7 +371,7 @@ TfMakeReverseIterator(T&& container)
 /// \ingroup group_tf_Containers
 /// \hideinitializer
 #define TF_FOR_ALL(iter, c) \
-    for (auto iter = TfMakeIterator(c); iter; ++iter)
+    for (auto iter = PXR_NS::TfMakeIterator(c); iter; ++iter)
 
 /// Macro for iterating over a container in reverse.
 ///
@@ -380,7 +380,7 @@ TfMakeReverseIterator(T&& container)
 /// \ingroup group_tf_Containers
 /// \hideinitializer
 #define TF_REVERSE_FOR_ALL(iter, c) \
-    for (auto iter = TfMakeReverseIterator(c); iter; ++iter)
+    for (auto iter = PXR_NS::TfMakeReverseIterator(c); iter; ++iter)
 
 /// Returns the number of elements in a statically sized array.
 ///

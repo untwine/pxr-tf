@@ -290,7 +290,7 @@ TF_NAMESPACE_OPEN_SCOPE
 ///
 /// \hideinitializer
 #define TF_FUNC_NAME()                                 \
-    ArchGetPrettierFunctionName(__ARCH_FUNCTION__, __ARCH_PRETTY_FUNCTION__)
+    PXR_NS::ArchGetPrettierFunctionName(__ARCH_FUNCTION__, __ARCH_PRETTY_FUNCTION__)
 
 void Tf_TerminateHandler();
 
@@ -303,14 +303,14 @@ void Tf_TerminateHandler();
 #undef TF_CODING_ERROR
 #endif
 #define TF_CODING_ERROR(...)                            \
-    Tf_PostErrorHelper(TF_CALL_CONTEXT,                 \
+    PXR_NS::Tf_PostErrorHelper(TF_CALL_CONTEXT,         \
         TF_DIAGNOSTIC_CODING_ERROR_TYPE, __VA_ARGS__)
 
 #ifdef TF_FATAL_CODING_ERROR
 #undef TF_FATAL_CODING_ERROR
 #endif
 #define TF_FATAL_CODING_ERROR                                \
-    Tf_DiagnosticHelper(TF_CALL_CONTEXT,                \
+    PXR_NS::Tf_DiagnosticHelper(TF_CALL_CONTEXT,        \
         TF_DIAGNOSTIC_CODING_ERROR_TYPE).IssueFatalError
 
 
@@ -318,42 +318,42 @@ void Tf_TerminateHandler();
 #undef TF_CODING_WARNING
 #endif
 #define TF_CODING_WARNING(...)                   \
-    Tf_PostWarningHelper(TF_CALL_CONTEXT,               \
+    PXR_NS::Tf_PostWarningHelper(TF_CALL_CONTEXT,       \
         TF_DIAGNOSTIC_CODING_ERROR_TYPE, __VA_ARGS__)
 
 #ifdef TF_DIAGNOSTIC_WARNING
 #undef TF_DIAGNOSTIC_WARNING
 #endif
 #define TF_DIAGNOSTIC_WARNING                                \
-    Tf_DiagnosticHelper(TF_CALL_CONTEXT.Hide(),                \
+    PXR_NS::Tf_DiagnosticHelper(TF_CALL_CONTEXT.Hide(),        \
         TF_DIAGNOSTIC_WARNING_TYPE).IssueWarning
 
 #ifdef TF_RUNTIME_ERROR
 #undef TF_RUNTIME_ERROR
 #endif // TF_RUNTIME_ERROR
 #define TF_RUNTIME_ERROR(...)                           \
-    Tf_PostErrorHelper(TF_CALL_CONTEXT,                 \
+    PXR_NS::Tf_PostErrorHelper(TF_CALL_CONTEXT,         \
         TF_DIAGNOSTIC_RUNTIME_ERROR_TYPE, __VA_ARGS__)
 
 #ifdef TF_FATAL_ERROR
 #undef TF_FATAL_ERROR
 #endif // TF_FATAL_ERROR
 #define TF_FATAL_ERROR                                  \
-    Tf_DiagnosticHelper(TF_CALL_CONTEXT,                \
+    PXR_NS::Tf_DiagnosticHelper(TF_CALL_CONTEXT,        \
         TF_DIAGNOSTIC_FATAL_ERROR_TYPE).IssueFatalError
 
 #ifdef TF_DIAGNOSTIC_FATAL_ERROR
 #undef TF_DIAGNOSTIC_FATAL_ERROR
 #endif // TF_DIAGNOSTIC_FATAL_ERROR
 #define TF_DIAGNOSTIC_FATAL_ERROR                       \
-    Tf_DiagnosticHelper(TF_CALL_CONTEXT,                \
+    PXR_NS::Tf_DiagnosticHelper(TF_CALL_CONTEXT,        \
         TF_DIAGNOSTIC_RUNTIME_ERROR_TYPE).IssueFatalError
 
 #ifdef TF_DIAGNOSTIC_NONFATAL_ERROR
 #undef TF_DIAGNOSTIC_NONFATAL_ERROR
 #endif // TF_DIAGNOSTIC_NONFATAL_ERROR
 #define TF_DIAGNOSTIC_NONFATAL_ERROR                        \
-    Tf_DiagnosticHelper(TF_CALL_CONTEXT,                 \
+    PXR_NS::Tf_DiagnosticHelper(TF_CALL_CONTEXT,         \
         TF_DIAGNOSTIC_WARNING_TYPE).IssueWarning
 
 // Redefine the following three macros from DiagnosticLite to versions that will
@@ -369,31 +369,31 @@ void Tf_TerminateHandler();
 #undef TF_WARN
 #endif // TF_WARN
 #define TF_WARN(...)                                \
-    Tf_PostWarningHelper(TF_CALL_CONTEXT, __VA_ARGS__)
+    PXR_NS::Tf_PostWarningHelper(TF_CALL_CONTEXT, __VA_ARGS__)
 
 #ifdef TF_STATUS
 #undef TF_STATUS
 #endif // TF_STATUS
 #define TF_STATUS(...)                              \
-    Tf_PostStatusHelper(TF_CALL_CONTEXT, __VA_ARGS__)
+    PXR_NS::Tf_PostStatusHelper(TF_CALL_CONTEXT, __VA_ARGS__)
 
 #ifdef TF_ERROR
 #undef TF_ERROR
 #endif // TF_ERROR
 #define TF_ERROR(...)                              \
-    Tf_PostErrorHelper(TF_CALL_CONTEXT, __VA_ARGS__)
+    PXR_NS::Tf_PostErrorHelper(TF_CALL_CONTEXT, __VA_ARGS__)
 
 #ifdef TF_QUIET_ERROR
 #undef TF_QUIET_ERROR
 #endif // TF_ERROR
 #define TF_QUIET_ERROR(...)                              \
-    Tf_PostQuietlyErrorHelper(TF_CALL_CONTEXT, __VA_ARGS__)
+    PXR_NS::Tf_PostQuietlyErrorHelper(TF_CALL_CONTEXT, __VA_ARGS__)
 
 // See documentation above.
 #define TF_VERIFY(cond, ...)                                                   \
     (ARCH_LIKELY(cond) ? true :                                                \
-     Tf_FailedVerifyHelper(TF_CALL_CONTEXT, # cond,                            \
-                           Tf_VerifyStringFormat(__VA_ARGS__)))
+    PXR_NS::Tf_FailedVerifyHelper(TF_CALL_CONTEXT, # cond,                     \
+                           PXR_NS::Tf_VerifyStringFormat(__VA_ARGS__)))
 
 // Helpers for TF_VERIFY.
 TF_API  bool

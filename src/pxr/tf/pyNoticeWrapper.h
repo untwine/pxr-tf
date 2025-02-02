@@ -137,8 +137,8 @@ private:
 #define TF_INSTANTIATE_NOTICE_WRAPPER(T, Base) \
 TF_REGISTRY_FUNCTION(TfType) \
 { \
-    TfType::Define< TfPyNoticeWrapper<T, Base>, \
-                    TfType::Bases<Base> >(); \
+    PXR_NS::TfType::Define< PXR_NS::TfPyNoticeWrapper<T, Base>, \
+                           PXR_NS::TfType::Bases<Base> >(); \
 }
 
 TF_NAMESPACE_CLOSE_SCOPE

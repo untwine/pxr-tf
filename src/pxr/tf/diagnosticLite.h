@@ -74,43 +74,43 @@ private:
 };
 
 #define TF_CODING_ERROR                                                 \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                            \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                    \
         TF_DIAGNOSTIC_CODING_ERROR_TYPE).IssueError
 
 #define TF_CODING_WARNING                                                \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                                \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                        \
         TF_DIAGNOSTIC_CODING_ERROR_TYPE).IssueWarning                        \
 
 #define TF_FATAL_CODING_ERROR                                           \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                            \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                    \
         TF_DIAGNOSTIC_CODING_ERROR_TYPE).IssueFatalError
 
 #define TF_RUNTIME_ERROR                                                \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                            \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                    \
         TF_DIAGNOSTIC_RUNTIME_ERROR_TYPE).IssueError
 
 #define TF_FATAL_ERROR                                                  \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                            \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                    \
         TF_DIAGNOSTIC_FATAL_ERROR_TYPE).IssueFatalError
 
 #define TF_DIAGNOSTIC_FATAL_ERROR                                       \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                                \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                        \
         TF_DIAGNOSTIC_RUNTIME_ERROR_TYPE).IssueFatalError
 
 #define TF_DIAGNOSTIC_NONFATAL_ERROR                                    \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                                \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                        \
         TF_DIAGNOSTIC_WARNING_TYPE).IssueWarning
 
 #define TF_DIAGNOSTIC_WARNING                                                \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT.Hide(),                        \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT.Hide(),                \
         TF_DIAGNOSTIC_WARNING_TYPE).IssueWarning
 
 #define TF_WARN                                                         \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                            \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                    \
         TF_DIAGNOSTIC_WARNING_TYPE).IssueWarning
 
 #define TF_STATUS                                                       \
-    Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                            \
+    PXR_NS::Tf_DiagnosticLiteHelper(TF_CALL_CONTEXT,                    \
         TF_DIAGNOSTIC_STATUS_TYPE).IssueStatus
 
 constexpr bool
@@ -121,10 +121,10 @@ Tf_AxiomHelper(bool val, TfCallContext const &ctx, char const *txt) {
 }
 
 #define TF_AXIOM(cond)                                                  \
-    Tf_AxiomHelper(static_cast<bool>((cond)), TF_CALL_CONTEXT, #cond)
+    PXR_NS::Tf_AxiomHelper(static_cast<bool>((cond)), TF_CALL_CONTEXT, #cond)
 
 #define TF_DEV_AXIOM(cond)                                              \
-    Tf_AxiomHelper(!ARCH_DEV_BUILD ||                                   \
+    PXR_NS::Tf_AxiomHelper(!ARCH_DEV_BUILD ||                           \
                    static_cast<bool>((cond)), TF_CALL_CONTEXT, #cond)
 
 #endif  // !defined(doxygen)

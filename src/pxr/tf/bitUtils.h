@@ -25,7 +25,7 @@ TF_NAMESPACE_OPEN_SCOPE
 /// \ingroup group_tf_BasicMath
 /// \hideinitializer
 #define TF_BITS_FOR_VALUES(n) \
-    Tf_NumBits<n-1>::type::value
+    PXR_NS::Tf_NumBits<n-1>::type::value
 
 template <size_t N, size_t SUM=0, size_t BIT=sizeof(N)*8/2>
 struct Tf_NumBits
