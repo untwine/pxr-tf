@@ -169,7 +169,7 @@ static void Run()
     TF_AXIOM(i0++->first == keys[1]);
 
     printf("inserting using insert(range)\n");
-    std::vector< std::pair<int, std::string> > morekeys;
+    std::vector< std::pair<size_t, std::string> > morekeys;
     for(size_t i=100; i<200; i++)
         morekeys.push_back(std::make_pair(i, "hello"));
     _map.insert(morekeys.begin(), morekeys.end());
