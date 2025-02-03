@@ -291,7 +291,7 @@ TF_NAMESPACE_OPEN_SCOPE
 ///
 /// \hideinitializer
 #define TF_FUNC_NAME()                                 \
-    TF_NS::ArchGetPrettierFunctionName(__ARCH_FUNCTION__, __ARCH_PRETTY_FUNCTION__)
+    ARCH_NS::ArchGetPrettierFunctionName(__ARCH_FUNCTION__, __ARCH_PRETTY_FUNCTION__)
 
 void Tf_TerminateHandler();
 

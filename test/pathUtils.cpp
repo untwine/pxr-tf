@@ -129,7 +129,7 @@ TestTfRealPath()
         // the current directory.
         ::SetCurrentDirectory("b");
         string thissubdir = thisdir;
-        thissubdir += "/subdir";
+        thissubdir += "\\subdir";
         TF_AXIOM(TfRealPath(".") == thissubdir);
         ::SetCurrentDirectory("..");
         // Then from outside the directory, validate that the more indirect

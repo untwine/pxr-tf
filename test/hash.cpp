@@ -268,7 +268,7 @@ Test_TfHash()
     std::map<int, uint32_t> mint = {{-1, 1}, {2, 3}, {-4, 5}};
     printf("hash(map<int, uint32_t>): %zu\n", h(mint));
 
-    std::pair<int, float> intfloat = {1, 2.34};
+    std::pair<int, float> intfloat = {1, static_cast<float>(2.34)};
     printf("hash(pair<int, float>): %zu\n", h(intfloat));
 
     std::tuple<int, float> intfloat2 = {1, 2.34};

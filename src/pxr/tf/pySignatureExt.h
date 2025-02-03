@@ -8,7 +8,6 @@
 #ifndef PXR_TF_PY_SIGNATURE_EXT_H
 #define PXR_TF_PY_SIGNATURE_EXT_H
 
-#include <pxr/boost/python/common.hpp>
 #include <pxr/boost/python/type_list.hpp>
 
 // This file extends pxr_boost::python::detail::get_signature to support member
@@ -40,7 +39,7 @@ auto get_signature(Ret (TheCls::*)(Args...) const &, void* =nullptr) {
     return python::type_list<Ret, TheCls &, Args...>();
 }
 
-}}}}
+}}}
 
 #include <pxr/boost/python/signature.hpp>
 
