@@ -42,7 +42,6 @@ Test_TfDl()
     string dlname;
     TF_AXIOM(ArchGetAddressInfo((void*)Test_TfDl, &dlname, NULL, NULL, NULL));
     dlname = TfGetPathName(dlname) +
-        "lib" ARCH_PATH_SEP
 #if !defined(ARCH_OS_WINDOWS)
         "lib"
 #endif

@@ -7,7 +7,6 @@
 #ifndef PXR_BASE_TF_PY_SIGNATURE_EXT_H
 #define PXR_BASE_TF_PY_SIGNATURE_EXT_H
 
-#include <pxr/boost/python/common.hpp>
 #include <pxr/boost/python/type_list.hpp>
 
 // This file extends pxr_boost::python::detail::get_signature to support member

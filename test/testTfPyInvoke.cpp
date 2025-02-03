@@ -62,7 +62,7 @@ static void TestInvokeAndExtract_NoArgs()
 {
     std::string result;
     const bool ok = TfPyInvokeAndExtract(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_NoArgs",
         &result);
     TF_AXIOM(ok == true);
@@ -73,7 +73,7 @@ static void TestInvokeAndReturn_NoArgs()
 {
     pxr_boost::python::object result;
     const bool ok = TfPyInvokeAndReturn(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_ReturnInt",
         &result);
     TF_AXIOM(ok == true);
@@ -109,7 +109,7 @@ static void TestInvokeAndExtract_Complex()
     std::vector<std::string> expected{"abab", "cdcd"};
     std::vector<std::string> result;
     const bool ok = TfPyInvokeAndExtract(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_RepeatStrings",
         &result,
         input,
@@ -122,7 +122,7 @@ static void TestInvokeAndExtract_ListArgs()
 {
     std::string result;
     const bool ok = TfPyInvokeAndExtract(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_ConcatWithList",
         &result,
         "one",
@@ -137,7 +137,7 @@ static void TestInvokeAndExtract_KwArgs()
 {
     std::string result;
     const bool ok = TfPyInvokeAndExtract(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_ConcatWithKwArgs",
         &result,
         "one",
@@ -153,7 +153,7 @@ static void TestInvoke_NoneType()
 {
     // Pass None (from nullptr) as an arg.
     const bool ok = TfPyInvoke(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_GetTheeToANonery",
         nullptr);
     TF_AXIOM(ok == true);
@@ -180,7 +180,7 @@ static void TestInvoke_NonexistentFunction()
 static void TestInvoke_NonCallable()
 {
     const bool ok = TfPyInvoke(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_globalVar");
     TF_AXIOM(ok == false);
 }
@@ -209,7 +209,7 @@ static void TestInvoke_WrongParamType()
 static void TestInvoke_BadKwArgOrder()
 {
     TfPyInvoke(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_ConcatWithKwArgs",
         1,
         TfPyKwArg("arg3", 4),
@@ -242,7 +242,7 @@ static void TestInvokeAndExtract_WrongResultType()
 static void TestInvoke_Exception()
 {
     const bool ok = TfPyInvoke(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_RaiseException");
     TF_AXIOM(ok == false);
 }
@@ -250,7 +250,7 @@ static void TestInvoke_Exception()
 static void TestInvoke_TfError()
 {
     const bool ok = TfPyInvoke(
-        "pxr.Tf.testenv.testTfPyInvoke_callees",
+        "testTfPyInvoke_callees",
         "_RaiseTfError");
     TF_AXIOM(ok == false);
 }

@@ -8,16 +8,16 @@ SML: Registering lib Other with predecessors LoadsAll
 # to import LoadsAll, which would fail, but we defer loading Other
 # until after LoadsAll is finished loading.
 SML: Begin loading DepLoadsAll's predecessors
-SML: Loading lib LoadsAll's module 'pxr.Tf.testenv.testTfScriptModuleLoader_LoadsAll'
+SML: Loading lib LoadsAll's module 'testTfScriptModuleLoader_LoadsAll'
 SML: Begin loading LoadsAll's predecessors
 SML: End loading LoadsAll's predecessors
 SML: Request to load modules for empty lib name -> load all
 SML: Begin loading all modules
-SML: Loading lib DepLoadsAll's module 'pxr.Tf.testenv.testTfScriptModuleLoader_DepLoadsAll'
+SML: Loading lib DepLoadsAll's module 'testTfScriptModuleLoader_DepLoadsAll'
 SML: Begin loading DepLoadsAll's predecessors
-SML: Loading lib LoadsAll's module 'pxr.Tf.testenv.testTfScriptModuleLoader_LoadsAll'
+SML: Loading lib LoadsAll's module 'testTfScriptModuleLoader_LoadsAll'
 SML: End loading DepLoadsAll's predecessors
-SML: Loading lib Other's module 'pxr.Tf.testenv.testTfScriptModuleLoader_Other'
+SML: Loading lib Other's module 'testTfScriptModuleLoader_Other'
 SML: Begin loading Other's predecessors
 SML: End loading Other's predecessors
 SML: End loading all modules
@@ -36,7 +36,7 @@ SML: Registering lib Test with predecessors LoadsUnknown
 # which should request for Unknown's dependencies (NewDependency) to
 # load, which should work.
 SML: Begin loading Test's predecessors
-SML: Loading lib LoadsUnknown's module 'pxr.Tf.testenv.testTfScriptModuleLoader_LoadsUnknown'
+SML: Loading lib LoadsUnknown's module 'testTfScriptModuleLoader_LoadsUnknown'
 SML: Begin loading LoadsUnknown's predecessors
 SML: End loading LoadsUnknown's predecessors
 SML: Registering lib Unknown with predecessors NewDynamicDependency

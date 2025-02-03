@@ -42,7 +42,6 @@ Test_TfRegistryManagerUnload()
     std::string libraryPath;
     TF_AXIOM(ArchGetAddressInfo((void*)Test_TfRegistryManagerUnload, &libraryPath, NULL, NULL, NULL));
     libraryPath = TfGetPathName(libraryPath) +
-                  "lib" ARCH_PATH_SEP
 #if !defined(ARCH_OS_WINDOWS)
                   "lib"
 #endif
