@@ -85,6 +85,10 @@ static const bool requireWritePermissionDefault = true;
     #define DEFFILEMODE 0666
 #endif
 
+#ifndef DEFFILEMODE
+# define DEFFILEMODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) // 0666
+#endif
+
 TF_DEFINE_ENV_SETTING(
     TF_REQUIRE_FILESYSTEM_WRITE_PERMISSION, requireWritePermissionDefault,
         "If enabled, check for both directory and file write permissions "
