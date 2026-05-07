@@ -141,6 +141,19 @@ TfDiagnosticMgr::_LogTextPin::~_LogTextPin()
     }
 }
 
+TfDiagnosticMgr::_LogTextPin &
+TfDiagnosticMgr::_LogTextPin::_LogTextPin::operator=(_LogTextPin &&other)
+{
+    if (this != &other) {
+        if (_lines) {
+            ArchSetExtraLogInfoForErrors(_key, nullptr);
+        }
+        _key   = std::move(other._key);
+        _lines = std::move(other._lines);
+    }
+    return *this;
+}
+
 // _LogTextBuffer implementation
 //
 // The requirement at the Arch level for ArchSetExtraLogInfoForErrors is that

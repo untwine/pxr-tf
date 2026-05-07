@@ -447,7 +447,7 @@ private:
     struct _LogTextPin {
         _LogTextPin() = default;
         _LogTextPin(_LogTextPin &&) = default;
-        _LogTextPin &operator=(_LogTextPin &&) = default;
+        TF_API _LogTextPin &operator=(_LogTextPin &&);
         _LogTextPin(const _LogTextPin &) = delete;
         _LogTextPin &operator=(const _LogTextPin &) = delete;
         TF_API ~_LogTextPin();
