@@ -327,17 +327,19 @@ TfDiagnosticMgr::_ForEachDelegate(Fn const &fn) const
     return true;
 }
 
-void
+void *
 TfDiagnosticMgr::_PushTrap(TfDiagnosticTrap *trap)
 {
-    _markCountsAndTrapStacks.local().trapStack.push_back(trap);
+    _TrapStack &stack = _markCountsAndTrapStacks.local().trapStack;
+    stack.push_back(trap);
+    return &stack;
 }
 
 void
-TfDiagnosticMgr::_PopTrap(TfDiagnosticTrap *trap)
+TfDiagnosticMgr::_PopTrap(TfDiagnosticTrap *trap, void *key)
 {
     const bool wasClean = trap->IsClean();
-    auto &stack = _markCountsAndTrapStacks.local().trapStack;
+    auto &stack = *static_cast<_TrapStack *>(key);
     if (TF_VERIFY(!stack.empty() && stack.back() == trap)) {
         stack.pop_back();
     }

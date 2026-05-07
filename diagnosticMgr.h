@@ -395,20 +395,23 @@ private:
     ErrorIterator _GetErrorMarkBegin(size_t mark, size_t *nErrors);
 
     // Invoked by ErrorMark ctor.
-    inline void _CreateErrorMark() {
-        ++_markCountsAndTrapStacks.local().markCount;
+    inline void *_CreateErrorMark() {
+        size_t &markCount = _markCountsAndTrapStacks.local().markCount;
+        ++markCount;
+        return &markCount;
     }
 
     // Invoked by ErrorMark dtor.
-    inline bool _DestroyErrorMark() {
-        return --_markCountsAndTrapStacks.local().markCount == 0;
+    inline bool _DestroyErrorMark(void *key) {
+        size_t &markCount = *static_cast<size_t *>(key);
+        return --markCount == 0;
     }
 
     // Invoked by TfDiagnosticTrap constructor.
-    void _PushTrap(TfDiagnosticTrap *trap);
+    void *_PushTrap(TfDiagnosticTrap *trap);
 
     // Invoked by TfDiagnosticTrap destructor.
-    void _PopTrap(TfDiagnosticTrap *trap);
+    void _PopTrap(TfDiagnosticTrap *trap, void *key);
 
     TfDiagnosticTrap *_GetActiveTrap();
 
@@ -525,12 +528,14 @@ private:
     static constexpr size_t _TrapStackLocalCap =
         TfComputeSmallVectorLocalCapacityForTotalSize<
         TfDiagnosticTrap*, ARCH_CACHE_LINE_SIZE - sizeof(size_t)>();
+
+    using _TrapStack = TfSmallVector<TfDiagnosticTrap*, _TrapStackLocalCap>;
     
     // Struct containing thread-local error mark count, and stack of active
     // diagnostic traps, innermost last.
     struct _MarkCountAndTrapStack {
         size_t markCount = 0;
-        TfSmallVector<TfDiagnosticTrap*, _TrapStackLocalCap> trapStack;
+        _TrapStack trapStack;
     };
 
     static_assert(sizeof(_MarkCountAndTrapStack) == ARCH_CACHE_LINE_SIZE);
